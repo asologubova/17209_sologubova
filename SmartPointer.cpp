@@ -36,32 +36,24 @@ public:
 		spdata->ptr = a;
 		spdata->counter++;
 	}
-<<<<<<< HEAD
 	SmartPointer(const SmartPointer & other) { //консруктор копирования 
 		//заглянуть в other.spdata
 		//скопировать ее адрес себе
 		//увеличить счетчик ссылок
 		if (!other.spdata) return; //??
-		other.spdata = spdata;
-		other.spdata->counter++;
+		spdata = other.spdata;
+		spdata->counter++;
 	}
 	SmartPointer & operator=(const SmartPointer & other) { //операция присваивания 
-		if (!other.spdata) return nullptr; //??
-		other.spdata = spdata;
-		other.spdata->counter++;
-=======
-	SmartPointer(const SmartPointer & other) { //консруктор копирования
-		//заглянуть в other.spdata
-		//скопировать ее адрес себе
-		//увеличить счетчик ссылок
-		if (!other.spdata) return;
-		//...
-		other.spdata->counter++;
-
-	}
-	SmartPointer & operator=(const SmartPointer & other) { //операция присваивания
-
->>>>>>> 9189338f2697f932b43c2d66738dfc2f30afe545
+		if (!other.spdata) return nullptr;
+		
+		if (this != &other) {
+			if (nullptr != spdata) {
+				--spdata->counter;
+			}
+			spdata = other.spdata;
+			spdata->counter++;
+		}
 
 		return *this;
 	}
