@@ -2,22 +2,11 @@
 //при уничтожении объект отпускает ресурс (в деструкторе), захватывает, например, в конструкторе
 //управление ресурсами
 
-//ƒќƒ≈Ћј“№!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 #include <cstdio>
 #include <fstream>
 
-struct A {
-	
-};
-
-struct SmartPtrData {
-	size_t counter = 0u;
-	A * ptr = nullptr;
-};
-
 //умный указатель
-//по желанию: template <class T>
+template <class A> 
 class SmartPointer {
 public:
 	SmartPointer() {} //конструктор по умолчанию
@@ -50,22 +39,42 @@ public:
 		if (this != &other) {
 			if (nullptr != spdata) {
 				--spdata->counter;
+				if (1 == spdata->counter)
+					delete spdata->ptr;
 			}
 			spdata = other.spdata;
 			spdata->counter++;
 		}
-
 		return *this;
 	}
 	//по желанию: поддердать семантику перемещени€
 
-	A * get(); //получить указатель
-	void reset(A * other); //освободить старый ресурс, захватить новый
+	A * get() { //получить указатель
+		return spdata->ptr;
+	}
+	void reset(A * other) { //освободить старый ресурс, захватить новый
+		if (1 == spdata->counter) {
+			delete spdata->ptr;
+		}
+		if (!other) return;
+		spdata->ptr = other;
+		spdata->counter++;
+	}
 
-	//operator*, operator->
+	SmartPtrData & operator* {
+		return *spdata;
+	}
+	SmartPtrData * operator-> {
+		return spdata;
+	}
 
 private:
 	SmartPtrData * spdata = nullptr;
+
+	struct SmartPtrData {
+		size_t counter = 0u;
+		A * ptr = nullptr;
+	};
 };
 
 void f() {
@@ -97,3 +106,13 @@ int main() {
 	//g();
 	//delete i; // с пам€тью проблемс т.к. в g() бросаетс€ исключение и до delete не дойдем
 }
+
+
+//struct A {
+//	
+//};
+//
+//struct SmartPtrData {
+//	size_t counter = 0u;
+//	A * ptr = nullptr;
+//};
