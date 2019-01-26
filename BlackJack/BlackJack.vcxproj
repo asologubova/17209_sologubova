@@ -115,11 +115,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Black_Jack.cpp" />
+    <ClCompile Include="game.cpp" />
+    <ClCompile Include="pack.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header.h" />
+    <ClInclude Include="factory.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="hand.h" />
+    <ClInclude Include="pack.h" />
+    <ClInclude Include="strat1.h" />
+    <ClInclude Include="strategy.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
