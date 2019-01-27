@@ -1,22 +1,21 @@
 #include "game.h"
 
 Game::Game(){
-    status = startNewGame;
-    Player Player1;
-    Player Player2;
+    status = StartNewGame;
+
 }
 
 void Game::doGame(){
-    wlile(status != EndOfGame){
+    while(status != EndOfGame){
         switch (status){
-            case startNewGame: // Начинаем новую игру
+            case StartNewGame: // Начинаем новую игру
             {
-                Player1.Initialization();
-                Player2.Initialization();
-                status = player1Attack;
+                Player1.init();
+                Player2.init();
+                status = Player1Attack;
                 break;
             }
-            case player1Attack: // Ход первого игрока
+            case Player1Attack: // Ход первого игрока
             {
                 int x=0;
                 int y=0;
@@ -28,12 +27,12 @@ void Game::doGame(){
                 if (strcmp(Player2.PlayerStatus(), "Проиграл") == 0)
                     status=EndOfGame; // Был уничтожен последний корабль, завершаем игру
 
-                if (result == Player::None) status=player2Attack; // Промазал!!! Передаем ход противнику
-                else status=player1Attack; // Попал!!! Снова ходит первый игрок
+                if (result == Player::None) status=Player2Attack; // Промазал!!! Передаем ход противнику
+                else status=Player1Attack; // Попал!!! Снова ходит первый игрок
 
                 break;
             }
-            case player2Attack: // Ход второго игрока
+            case Player2Attack: // Ход второго игрока
             {
                 int x=0;
                 int y=0;
@@ -43,10 +42,10 @@ void Game::doGame(){
                 int result=Player1.TestCell(x, y);
 
                 if (strcmp(Player1.PlayerStatus(), "Проиграл") == 0)
-                    status=endOfGame; // Был уничтожен последний корабль, завершаем игру
+                    status=EndOfGame; // Был уничтожен последний корабль, завершаем игру
 
-                if (result == Player::None) status=player1Attack; // Промазал!!! Передаем ход противнику
-                else status=player2Attack; // Попал!!! Снова ходит второй игрок
+                if (result == Player::None) status=Player1Attack; // Промазал!!! Передаем ход противнику
+                else status=Player2Attack; // Попал!!! Снова ходит второй игрок
 
                 break;
             }

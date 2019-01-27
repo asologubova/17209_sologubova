@@ -30,7 +30,6 @@ SOURCES += \
     cell.cpp \
     game.cpp \
     ship.cpp \
-    player.cpp \
     computerplayer.cpp
 
 HEADERS += \
@@ -38,7 +37,6 @@ HEADERS += \
     cell.h \
     game.h \
     ship.h \
-    player.h \
     computerplayer.h
 
 FORMS += \
