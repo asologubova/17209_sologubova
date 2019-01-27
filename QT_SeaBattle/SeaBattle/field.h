@@ -12,10 +12,10 @@ enum ShipPosition {
     HORIZONTAL
 };
 
-//struct _Ship {
-//    Ship ship;
-//    std::vector<std::pair<int, int>> coord;//координаты x, y
-//};
+struct _Ship {
+    Ship ship;
+    std::vector<std::pair<int, int>> coordinates;//координаты x, y
+};
 
 class Field {
 public:
@@ -33,7 +33,7 @@ private:
 
 private:
     std::array<Cell, 100> field;
-    std::vector<Ship> ships;
+    std::vector<_Ship> ships;
 
     //const int weight = 10;
     //const int height = 10;

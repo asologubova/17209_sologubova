@@ -11,7 +11,7 @@ enum class ShipState : bool {
 class Ship
 {
 public:
-    Ship(int rk);//аргумент - ранг создаваемого корабля
+    Ship(int rk = 0);//аргумент - ранг создаваемого корабля
 
     int getRank() const;
     void shoot(int num);
