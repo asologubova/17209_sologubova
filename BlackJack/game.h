@@ -1,35 +1,49 @@
 #pragma once
+
 #include <cstdio>
 #include <ctime>
 #include <cstdlib>
+#include <iostream>
+
+#include <conio.h>
+
 #include "pack.h"
 #include "hand.h"
 #include "strategy.h"
 #include "factory.h"
 
-enum class Mode : char {
+//bool compareStrings(std::string str1, std::string str2, int n);
+
+//enum class Mode : char {
+enum Mode {
 	DETAILED,
 	FAST,
 	TOURNAMENT
 };
 
-class Game {
-	Mode gameMode;
-	size_t stratsCount;
-	std::string path;
-	
-public:
-	void treatData(int argc, const char** rawData);
-	void fullStrats();
-	std::vector<std::string> IDs;
-	std::vector<Hand> hands;
-	std::vector<Strategy*> strategies;
-	std::vector<bool> inGame;
+struct Gamer {
+	std::string ID = "";
+	std::string name = ""; //ЗАПОЛНИТЬ!
+	Hand hand;
+	Strategy* strat;
+	bool inGame = false;
+};
 
-	Game(int n, const char** rawData) {
-		stratsCount = 0;
-		gameMode = Mode::DETAILED;
-		treatData(n, rawData);
-		fullStrats();
-	}
+class Game {
+public:
+	Game(int n, const char** rawData);
+	void doGame();
+
+	std::vector<Gamer> gamers;
+
+private:
+	void fullStrats();
+	void treatData(int n, const char** rawData);
+
+private:
+	std::vector<std::string> IDs;
+	Mode gameMode;
+	size_t gamersCount;
+	std::string filePath;
+	Pack pack;          //Как это будет зависеть от N? 
 };

@@ -1,20 +1,25 @@
+#pragma once
+
 #include <cstdio>
 #include<vector>
 #include "pack.h"
-//#include "strategy.h"
 
 class Hand {
 public:
-
-
-	unsigned char sum = 0;
-	std::vector<Card> cards;
 	void clear() {
 		cards.clear();
 		sum = 0;
 	}
-	void takeCard(Pack &pack) {
-		cards.push_back(pack.getCard());
-		sum += cards.back().weight;
+	int takeCard(Pack &pack) {
+		Card card = pack.getCard();
+		cards.push_back(card);
+		sum += card.weight;
+		return card.weight;
 	}
+	int getSum() {
+		return sum;
+	}
+private:
+	int sum = 0;
+	std::vector<Card> cards;
 };

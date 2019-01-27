@@ -1,4 +1,4 @@
-#include "pack.h"
+п»ї#include "pack.h"
 
 Pack::Pack(unsigned char N) {
 	std::vector<Card> pack(PACK_SIZE*N);
@@ -7,16 +7,16 @@ Pack::Pack(unsigned char N) {
 	std::random_shuffle(pack.begin(), pack.end());
 }
 
-void Pack::fullPack(unsigned char N) { //создние колоды
+void Pack::fullPack(unsigned char N) { //Р·Р°РїРѕР»РЅРµРЅРёРµ РєРѕР»РѕРґС‹
 	int i = 0;
 	for (; i < PACK_SIZE; i++) {
 		Card card;
 		card.title = (i % 13) + 2;
 		card.suit = (i % 4) + 1;
-		card.weight = (i % 13) + 2; //карты с чисами
-		if ((i % 13 > 8) && (i % 13 < 12)) //карты с картинкой
+		card.weight = (i % 13) + 2; //РєР°СЂС‚С‹ СЃ С‡РёСЃР»Р°РјРё
+		if ((i % 13 > 8) && (i % 13 < 12)) //РєР°СЂС‚С‹ СЃ РєР°СЂС‚РёРЅРєР°РјРё
 			card.weight = 10;
-		if (i % 13 == 12)           //туз
+		if (i % 13 == 12)           //С‚СѓР·
 			card.weight = 1;
 		pack[i] = card;
 	}

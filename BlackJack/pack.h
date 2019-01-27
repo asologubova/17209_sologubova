@@ -24,7 +24,6 @@ class Pack {
 	size_t topCard;
 public:
 	Pack(unsigned char N = 1);
-	//~Pack();
 	void fullPack(unsigned char N = 1);
 	Card getCard();
 };

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstdio>
 #include "hand.h"
 
@@ -6,3 +8,4 @@ public:
 	virtual ~Strategy() {};
 	virtual bool makeDecision(const Hand & hand) = 0;
 };
+
