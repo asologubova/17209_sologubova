@@ -1,6 +1,6 @@
 #include "ship.h"
 
-Ship::Ship(int rk)
+Ship::Ship(unsigned rk)
 {
     if(rk >= 1 && rk <= 4) {
         rank = rk;
@@ -16,15 +16,15 @@ Ship::Ship(int rk)
     }
 }
 
-int Ship::getRank() const{
+unsigned Ship::getRank() const{
     return rank;
 }
 
-void Ship::shoot(int num){
-    if(num >= 0 && num < rank) {
+void Ship::shoot(unsigned num){
+    if(/*num >= 0 && */num < rank) {
         state[num] = ShipState::DESTROYED;
 
-        for(int i = 0; i < rank; i++)
+        for(unsigned i = 0; i < rank; i++)
             if (state[i] == ShipState::ALIVE) return;
 
         alive = false;

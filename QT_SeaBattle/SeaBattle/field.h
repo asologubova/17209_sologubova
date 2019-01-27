@@ -14,15 +14,15 @@ enum ShipPosition {
 
 struct _Ship {
     Ship ship;
-    std::vector<std::pair<int, int>> coordinates;//координаты x, y
+    std::vector<std::pair<unsigned, unsigned>> coordinates;//координаты x, y
 };
 
 class Field {
 public:
     Field();
 
-    bool setSheep(int x, int y, const Ship & ship, ShipPosition pos);
-    bool shoot(int x, int y);//true - если было попадание; false - иначе
+    bool setSheep(unsigned x, unsigned y, const Ship & ship, ShipPosition pos);
+    bool shoot(unsigned x, unsigned y);//true - если было попадание; false - иначе
     void clear();//очистка поля от всех кораблей
 
 private:
@@ -35,6 +35,7 @@ private:
     std::array<Cell, 100> field;
     std::vector<_Ship> ships;
 
+    void killFrameCells(const _Ship & s);
     //const int weight = 10;
     //const int height = 10;
 };

@@ -11,16 +11,16 @@ enum class ShipState : bool {
 class Ship
 {
 public:
-    Ship(int rk = 0);//аргумент - ранг создаваемого корабля
+    Ship(unsigned rk = 0);//аргумент - ранг создаваемого корабля
 
-    int getRank() const;
-    void shoot(int num);
+    unsigned getRank() const;
+    void shoot(unsigned num);
     //num - номер палубы (отсчёт от нуля);
     //вызывающий должен гарантировать, что num <= rank
     bool isAlive();
 
 private:
-    int rank;
+    unsigned rank;
     std::array<ShipState, 4> state;
     //состояние каждой палубы; размер массива - всегда 4,
     //используются только первые rank элементов
