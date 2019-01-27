@@ -3,6 +3,7 @@
 
 #include <array>
 #include <vector>
+#include <ctime>
 
 #include "cell.h"
 #include "ship.h"
@@ -21,9 +22,11 @@ class Field {
 public:
     Field();
 
-    bool setSheep(unsigned x, unsigned y, const Ship & ship, ShipPosition pos);
+    bool setShip(unsigned x, unsigned y, const Ship & ship, ShipPosition pos);
+    void autoPlaceShips();
     bool shoot(unsigned x, unsigned y);//true - если было попадание; false - иначе
     void clear();//очистка поля от всех кораблей
+    std::array<Cell, 100> getFieldInstance();
 
 private:
 // struct _Ship;

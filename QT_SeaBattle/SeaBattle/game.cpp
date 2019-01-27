@@ -5,61 +5,69 @@ Game::Game(){
 
 }
 
+std::array<Cell, 100> Game::getEnemyField(int k){
+    if (k == 1) return f2.getFieldInstance();
+    else return f1.getFieldInstance();
+}
+
+
 void Game::doGame(){
+    bool shooted = false;
+    bool contin = false;
     while(status != EndOfGame){
-        switch (status){
-            case StartNewGame: // Начинаем новую игру
-            {
-                Player1.init();
-                Player2.init();
-                status = Player1Attack;
-                break;
+        if (status == StartNewGame) // Начинаем новую игру
+            status = Player1Attack;
+
+        else if (status == Player1Attack){  // Ход первого игрока
+            std::pair<unsigned, unsigned> decision;
+            if (contin)
+                decision = Player1.makeRawDecision(getEnemyField(2));
+            //else - человечье решение
+            shooted = f2.shoot(decision.first, decision.second);
+
+            if (/*уничтожен последний корабль*/)
+                status = EndOfGame;
+
+            if (!shooted){
+                 status = Player2Attack; // Мимо :)
+                 contin = false;
             }
-            case Player1Attack: // Ход первого игрока
-            {
-                int x=0;
-                int y=0;
-
-                Player1.Attack(x, y);
-
-                int result = Player2.TestCell(x, y);
-
-                if (strcmp(Player2.PlayerStatus(), "Проиграл") == 0)
-                    status=EndOfGame; // Был уничтожен последний корабль, завершаем игру
-
-                if (result == Player::None) status=Player2Attack; // Промазал!!! Передаем ход противнику
-                else status=Player1Attack; // Попал!!! Снова ходит первый игрок
-
-                break;
+            else {
+                status = Player1Attack; // Снова ходит первый игрок (но делает человечье решение)
+                contin = true;
             }
-            case Player2Attack: // Ход второго игрока
-            {
-                int x=0;
-                int y=0;
+        }
 
-                Player2.Attack(x, y);
+        else if (status == Player2Attack){  // Ход второго игрока
+            std::pair<unsigned, unsigned> decision;
+            if (contin)
+                decision = Player2.makeRawDecision(getEnemyField(1));
+            //else - человечье решение
+            shooted = f1.shoot(decision.first, decision.second);
 
-                int result=Player1.TestCell(x, y);
+            if (/*уничтожен последний корабль*/)
+                status = EndOfGame;
 
-                if (strcmp(Player1.PlayerStatus(), "Проиграл") == 0)
-                    status=EndOfGame; // Был уничтожен последний корабль, завершаем игру
-
-                if (result == Player::None) status=Player1Attack; // Промазал!!! Передаем ход противнику
-                else status=Player2Attack; // Попал!!! Снова ходит второй игрок
-
-                break;
+            if (!shooted){
+                 status = Player1Attack; // Мимо :)
+                 contin = false;
             }
+            else {
+                status = Player2Attack; // Снова ходит первый игрок (но делает человечье решение)
+                contin = true;
+            }
+        }
 
-            // После каждого хода отрисовываем текущее состояние игроков и ждем нажатия любой клавиши
-            //Player1.DrawBoard();
-            //Player2.DrawBoard();
-            //getch();
-        };
-
-        //Выводим результаты игры
-        //cout << "Первый игрок: " << Player1.PlayerStatus() << endl;
-        //cout << "Второй игрок: " << Player2.PlayerStatus() << endl;
-        //cout << "Игра окончена." << endl;
+        // После каждого хода отрисовываем текущее состояние игроков и ждем нажатия любой клавиши
+        //Player1.DrawBoard();
+        //Player2.DrawBoard();
         //getch();
     }
+
+    //Выводим результаты игры
+    //cout << "Первый игрок: " << Player1.PlayerStatus() << endl;
+    //cout << "Второй игрок: " << Player2.PlayerStatus() << endl;
+    //cout << "Игра окончена." << endl;
+    //getch();
+
 }

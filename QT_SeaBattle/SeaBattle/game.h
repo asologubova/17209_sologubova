@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "computerplayer.h"
+#include "field.h"
 
 enum GameStatus
 {
@@ -11,14 +12,21 @@ enum GameStatus
     EndOfGame           // Конец игры
 };
 
+//enum PlayerStatus {
+//    InGAME,
+//    LOST
+//};
+
 class Game
 {
     GameStatus status;
-    computerPlayer Player1;
-    computerPlayer Player2;
+    //PlayerStatus statusP1, statusP2;
+    Field f1, f2;
+    computerPlayer Player1, Player2;
 public:
     Game();
     void doGame();
+    std::array<Cell, 100> getEnemyField(int k);
 };
 
 #endif // GAME_H

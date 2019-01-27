@@ -3,7 +3,7 @@
 
 #include <array>
 
-enum class ShipState : bool {
+enum ShipState {
     ALIVE,
     DESTROYED
 };
@@ -11,7 +11,7 @@ enum class ShipState : bool {
 class Ship
 {
 public:
-    Ship(unsigned rk = 0);//аргумент - ранг создаваемого корабля
+    Ship(unsigned rk = 1);//аргумент - ранг создаваемого корабля
 
     unsigned getRank() const;
     void shoot(unsigned num);
