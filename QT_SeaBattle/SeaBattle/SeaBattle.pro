@@ -30,14 +30,16 @@ SOURCES += \
     cell.cpp \
     game.cpp \
     ship.cpp \
-    computerplayer.cpp
+    computerplayer.cpp \
+    field.cpp
 
 HEADERS += \
         mainwindow.h \
     cell.h \
     game.h \
     ship.h \
-    computerplayer.h
+    computerplayer.h \
+    field.h
 
 FORMS += \
         mainwindow.ui

@@ -3,15 +3,15 @@
 
 enum State
 {
-    alive,
-    dead,
+    ALIVE,
+    DEAD
    // empty,
    // shooted
 };
 
 class Cell
 {
-    State state;
+    State alive;
     bool busy;
 public:
     Cell();

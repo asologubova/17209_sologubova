@@ -1,7 +1,8 @@
 #include "cell.h"
 
-Cell::Cell(): state(alive), busy(false){
-
+Cell::Cell(){
+    alive = ALIVE;
+    busy = false;
 }
 
 bool Cell::isBusy(){
@@ -13,13 +14,13 @@ void Cell::setBusy(){
 }
 
 bool Cell::isAlive(){
-    return (state == alive);
+    return (alive == ALIVE);
 }
 
 void Cell::setAlive(){
-    state = alive;
+    alive = ALIVE;
 }
 
 void Cell::setDead(){
-    state = dead;
+    alive = DEAD;
 }
