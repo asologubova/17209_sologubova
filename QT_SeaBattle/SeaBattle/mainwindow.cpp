@@ -13,8 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget_myField->setShowGrid(true);
     ui->tableWidget_myField->setSelectionMode(QAbstractItemView::SingleSelection);
     for (int i = 0; i < 10; i++){
-        ui->tableWidget_myField->setColumnWidth(i, ui->tableWidget_myField->rowCount()/10);
-        ui->tableWidget_myField->setRowHeight(i, ui->tableWidget_myField->rowCount()/10);
+        ui->tableWidget_myField->setColumnWidth(i, ui->tableWidget_myField->width()/10);
+        ui->tableWidget_myField->setRowHeight(i, ui->tableWidget_myField->height()/10);
     }
 
     ui->tableWidget_enemyField->setColumnCount(10);
@@ -22,8 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget_enemyField->setShowGrid(true);
     ui->tableWidget_enemyField->setSelectionMode(QAbstractItemView::SingleSelection);
     for (int i = 0; i < 10; i++){
-        ui->tableWidget_enemyField->setColumnWidth(i, ui->tableWidget_enemyField->rowCount()/10);
-        ui->tableWidget_enemyField->setRowHeight(i, ui->tableWidget_enemyField->rowCount()/10);
+        ui->tableWidget_enemyField->setColumnWidth(i, ui->tableWidget_enemyField->width()/10);
+        ui->tableWidget_enemyField->setRowHeight(i, ui->tableWidget_enemyField->height()/10);
     }
 
     for (int i = 0; i < 10; i++)
@@ -38,23 +38,27 @@ MainWindow::MainWindow(QWidget *parent) :
             ui->tableWidget_enemyField->setItem(i,j,t);
         }
 
-    //режим расстановки кораблей:
+//    //режим расстановки кораблей:
 
-    //запретить редактировать свое поле:
-    for (int i = 0; i < 10; i++)
-        for (int j = 0; j < 10; j++){
-            ui->tableWidget_myField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
-        }
+//    //запретить редактировать свое поле:
+//    for (int i = 0; i < 10; i++)
+//        for (int j = 0; j < 10; j++){
+//            ui->tableWidget_myField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
+//        }
 
 
-    //играем:
+//    //играем:
 
 }
 
 
 MainWindow::~MainWindow()
 {
-    //удалить item'ы
+    for (int i = 0; i < 10; i++)
+        for (int j = 0; j < 10; j++){
+            delete(ui->tableWidget_myField->item(i,j));
+            delete(ui->tableWidget_enemyField->item(i,j));
+        }
     delete ui;
 
 }
