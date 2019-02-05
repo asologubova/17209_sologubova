@@ -5,44 +5,41 @@
 #include <vector>
 #include <ctime>
 
-#include "cell.h"
 #include "ship.h"
 
-enum ShipPosition {
+enum class ShipPosition : bool {
     VERTICAL,
     HORIZONTAL
 };
 
+enum class Cell{
+   CL_CLEAR,
+   CL_SHIP,
+   CL_DOT,
+   CL_HALF,
+   CL_FULL
+};
+
 struct _Ship {
     Ship ship;
-    std::vector<std::pair<unsigned, unsigned>> coordinates;//координаты x, y
+    std::vector<std::pair<int, int>> coordinates;//координаты x, y
 };
 
 class Field {
-public:
-    Field();
-
-    bool setShip(unsigned x, unsigned y, const Ship & ship, ShipPosition pos);
-    void autoPlaceShips();
-    bool shoot(unsigned x, unsigned y);//true - если было попадание; false - иначе
-    void clear();//очистка поля от всех кораблей
-    std::array<Cell, 100> getFieldInstance();
-
-private:
-// struct _Ship;
-// const std::array<Ship, 10> all_ships =
-// {1, 1, 1, 1, 2, 2, 2, 3, 3, 4};
-// массив из всех кораблей, которые должны быть расставленны
 
 private:
     std::array<Cell, 100> field;
     std::vector<_Ship> ships;
 
     void killFrameCells(const _Ship & s);
-    //const int weight = 10;
-    //const int height = 10;
+
+public:
+    Field();
+    bool setShip(int x, int y, const Ship & ship, ShipPosition pos);
+    void autoPlaceShips();
+    bool shoot(int x, int y);//true - если было попадание; false - иначе
+    void clear();//очистка поля от всех кораблей
+    const std::array<Cell, 100> & getFieldInstance();
 };
-
-
 
 #endif // FIELD_H

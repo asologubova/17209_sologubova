@@ -5,7 +5,7 @@ Game::Game(){
 
 }
 
-std::array<Cell, 100> Game::getEnemyField(int k){
+const std::array<Cell, 100> & Game::getEnemyField(int k){
     if (k == 1) return f2.getFieldInstance();
     else return f1.getFieldInstance();
 }
@@ -14,18 +14,21 @@ std::array<Cell, 100> Game::getEnemyField(int k){
 void Game::doGame(){
     bool shooted = false;
     bool contin = false;
+    std::pair<int, int> decision;
+    //bool point = false;
+
     while(status != EndOfGame){
         if (status == StartNewGame) // Начинаем новую игру
             status = Player1Attack;
 
         else if (status == Player1Attack){  // Ход первого игрока
-            std::pair<unsigned, unsigned> decision;
+
             if (contin)
                 decision = Player1.makeRawDecision(getEnemyField(2));
             //else - человечье решение
             shooted = f2.shoot(decision.first, decision.second);
 
-            if (/*уничтожен последний корабль*/)
+            if (/*уничтожен последний корабль противника*/ 1)
                 status = EndOfGame;
 
             if (!shooted){
@@ -39,13 +42,12 @@ void Game::doGame(){
         }
 
         else if (status == Player2Attack){  // Ход второго игрока
-            std::pair<unsigned, unsigned> decision;
             if (contin)
                 decision = Player2.makeRawDecision(getEnemyField(1));
             //else - человечье решение
             shooted = f1.shoot(decision.first, decision.second);
 
-            if (/*уничтожен последний корабль*/)
+            if (/*уничтожен последний корабль противника*/ 1)
                 status = EndOfGame;
 
             if (!shooted){

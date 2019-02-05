@@ -12,21 +12,15 @@ enum GameStatus
     EndOfGame           // Конец игры
 };
 
-//enum PlayerStatus {
-//    InGAME,
-//    LOST
-//};
-
 class Game
 {
     GameStatus status;
-    //PlayerStatus statusP1, statusP2;
-    Field f1, f2;
+    Field f1, f2; // в поле - подсчет кораблей
     computerPlayer Player1, Player2;
 public:
     Game();
     void doGame();
-    std::array<Cell, 100> getEnemyField(int k);
+    const std::array<Cell, 100> & getEnemyField(int k);
 };
 
 #endif // GAME_H

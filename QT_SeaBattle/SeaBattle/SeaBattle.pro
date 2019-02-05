@@ -27,7 +27,6 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    cell.cpp \
     game.cpp \
     ship.cpp \
     computerplayer.cpp \
@@ -35,7 +34,6 @@ SOURCES += \
 
 HEADERS += \
         mainwindow.h \
-    cell.h \
     game.h \
     ship.h \
     computerplayer.h \

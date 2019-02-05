@@ -3,13 +3,14 @@
 
 #include <array>
 #include <ctime>
-
-#include "cell.h"
+#include <field.h> //??
 
 class computerPlayer
 {
 public:
-    std::pair<unsigned,unsigned> makeRawDecision(std::array<Cell, 100> enemyField);
+    std::pair<int,int> makeRawDecision(const std::array<Cell, 100> & enemyField);
+    std::pair<int,int> makeReasonDecision(const std::array<Cell, 100> & enemyField,
+                                                    std::pair<int,int> point);
 };
 
 #endif // COMPUTERPLAYER_H
