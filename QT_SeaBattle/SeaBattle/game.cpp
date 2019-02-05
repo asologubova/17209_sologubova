@@ -73,3 +73,65 @@ void Game::doGame(){
     //getch();
 
 }
+bool Game::checkPlacing(const std::array<Cell, 100> & fld) const // + УЧЕСТЬ, ЯВЛЯЕТСЯ ЛИ КЛЕТКА КРАЙНЕЙ!!!
+{
+    int singleDeck = 0,
+            doubleDeck = 0,
+            threeDeck = 0,
+            fourDeck = 0;
+    int count = 0;
+    std::array<Cell, 100> tmp = fld;
+
+    for (int y = 0; y < 10; y++){
+        for (int x = 0; x < 10; x++){
+            int c = 10 * y + x;
+            if(tmp[c] == Cell::CL_SHIP){
+                if((x < 9) && (tmp[c + 1] == Cell::CL_SHIP)){ // горизонтальный
+                    while ((x + count < 10) && (tmp[c + count] == Cell::CL_SHIP)){
+                        //проверка окружения
+                        // + УЧЕСТЬ, ЯВЛЯЕТСЯ ЛИ КЛЕТКА КРАЙНЕЙ!!!
+                        if (tmp[c + count - 11] == Cell::CL_SHIP ||
+                                tmp[c + count - 10] == Cell::CL_SHIP ||
+                                tmp[c + count - 9] == Cell::CL_SHIP ||
+                                tmp[c + count + 9] == Cell::CL_SHIP||
+                                tmp[c + count + 10] == Cell::CL_SHIP||
+                                tmp[c + count + 11] == Cell::CL_SHIP){
+                            return false;
+                        }
+                        tmp[c + count] = Cell::CL_CLEAR;
+                        count++;
+                    }
+                    if (count > 4) return false;
+                    if (count == 4) fourDeck++;
+                    else if (count == 3) threeDeck++;
+                    else if (count == 2) doubleDeck++;
+                    else if (count == 1) singleDeck++;
+                    count = 0;
+
+                } else { // вертикальный или однопалубный
+                    while ((y + count < 10) && (tmp[c + 10 * count] == Cell::CL_SHIP)){
+                        //проверка окружения
+                        // + УЧЕСТЬ, ЯВЛЯЕТСЯ ЛИ КЛЕТКА КРАЙНЕЙ!!!
+                        if (tmp[c + 10 * count - 11] == Cell::CL_SHIP ||
+                                tmp[c + 10 * count - 9] == Cell::CL_SHIP ||
+                                tmp[c + 10 * count + 9] == Cell::CL_SHIP||
+                                tmp[c + 10 * count + 11] == Cell::CL_SHIP){
+                            return false;
+                        }
+                        tmp[c + 10 * count] = Cell::CL_CLEAR;
+                        count++;
+                    }
+                    if (count > 4) return false;
+                    if (count == 4) fourDeck++;
+                    else if (count == 3) threeDeck++;
+                    else if (count == 2) doubleDeck++;
+                    else if (count == 1) singleDeck++;
+                    count = 0;
+                }
+            }
+            tmp[c] = Cell::CL_CLEAR;
+        }
+    }
+    if ((fourDeck != 1) || (threeDeck != 2) || (doubleDeck != 3) || (singleDeck != 4)) return false;
+    return true;
+}

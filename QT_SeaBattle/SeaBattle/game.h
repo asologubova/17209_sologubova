@@ -15,12 +15,13 @@ enum GameStatus
 class Game
 {
     GameStatus status;
-    Field f1, f2; // в поле - подсчет кораблей
+    Field f1, f2; // сделать в поле подсчет кораблей
     computerPlayer Player1, Player2;
 public:
     Game();
     void doGame();
     const std::array<Cell, 100> & getEnemyField(int k);
+    bool checkPlacing(const std::array<Cell, 100> & fld) const;
 };
 
 #endif // GAME_H

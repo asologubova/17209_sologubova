@@ -26,51 +26,6 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pushButton_shoot">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>300</y>
-      <width>231</width>
-      <height>50</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>0</width>
-      <height>0</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>500</width>
-      <height>50</height>
-     </size>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>20</pointsize>
-     </font>
-    </property>
-    <property name="layoutDirection">
-     <enum>Qt::LeftToRight</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton {
-  background-color: #B0C4DE;
-  color: white; 
-  border: 1px solid gray;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #4A82B4, stop: 1 #B0C4DE);
-}</string>
-    </property>
-    <property name="text">
-     <string>Сделать ход</string>
-    </property>
-   </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
@@ -270,7 +225,7 @@ QPushButton:pressed {
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>150</x>
+      <x>140</x>
       <y>30</y>
       <width>389</width>
       <height>35</height>
@@ -287,7 +242,7 @@ QPushButton:pressed {
 }</string>
        </property>
        <property name="text">
-        <string>Моё поле</string>
+        <string>Игрок 1</string>
        </property>
       </widget>
      </item>
@@ -319,11 +274,56 @@ QPushButton:pressed {
 font: 75 20pt &quot;MS Shell Dlg 2&quot;;</string>
        </property>
        <property name="text">
-        <string>Поле врага</string>
+        <string>Игрок 2</string>
        </property>
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QPushButton" name="pushButton_place_ships">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>290</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>500</width>
+      <height>50</height>
+     </size>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+  background-color: #B0C4DE;
+  color: white; 
+  border: 1px solid gray;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #4A82B4, stop: 1 #B0C4DE);
+}</string>
+    </property>
+    <property name="text">
+     <string>Расставить корабли</string>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -333,29 +333,11 @@ font: 75 20pt &quot;MS Shell Dlg 2&quot;;</string>
      <x>0</x>
      <y>0</y>
      <width>670</width>
-     <height>18</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true"> QMenuBar {
-     background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                       stop:0 lightgray, stop:1 darkgray);
- }
-
- QMenuBar::item {
-     spacing: 3px; /* spacing between menu bar items */
-     padding: 1px 4px;
-     background: transparent;
-     border-radius: 4px;
- }
-
- QMenuBar::item:selected { /* when selected using mouse or keyboard */
-     background: #a8a8a8;
- }
-
- QMenuBar::item:pressed {
-     background: #888888;
- }</string>
+    <string notr="true"/>
    </property>
    <widget class="QMenu" name="menuGame">
     <property name="title">
