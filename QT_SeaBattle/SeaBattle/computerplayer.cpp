@@ -14,7 +14,16 @@ std::pair<int, int> computerPlayer::makeRawDecision(const std::array<Cell, 100> 
     return coordinates;
 }
 
-std::pair<int,int> makeReasonDecision(const std::array<Cell, 100> & enemyField,
-                                                std::pair<int,int> point){
+std::pair<int,int> computerPlayer::makeReasonDecision(const std::array<Cell, 100> & enemyField,
+                                                std::vector<std::pair<int,int>> & shootedPoints){
+    srand(static_cast<unsigned>(time(nullptr)));
+    std::pair<int, int> coordinates;
+    unsigned x, y;
 
+    //пишем тут
+    //если раненая точка одна - смотрим вокруг нее
+    //если больше - выбираем один из концов и стреляем в него (один из концов уже может не подходить)
+    //+как-то учесть положение корабля (вертикальный / горизонтальный)
+
+    return coordinates;
 }

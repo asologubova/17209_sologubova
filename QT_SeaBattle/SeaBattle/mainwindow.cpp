@@ -8,6 +8,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle("Sea Battle");
 
+    QPixmap img1(":/res/img/left.png");
+    QPixmap img2(":/res/img/right.png");
+    //int w = ui->label_3
+    ui->label_3->setPixmap(img1.scaled(40, 40, Qt::KeepAspectRatio));
+    ui->label_4->setPixmap(img2.scaled(40, 40, Qt::KeepAspectRatio));
+
     ui->tableWidget_myField->setColumnCount(10);
     ui->tableWidget_myField->setRowCount(10);
     ui->tableWidget_myField->setShowGrid(true);
@@ -44,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
         for (int j = 0; j < 10; j++){
             ui->tableWidget_enemyField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
         }
+    ui->label_result->setHidden(true);
 
     connect(ui->pushButton_place_ships, SIGNAL(clicked()), this, SLOT(checkPlacing()));
     connect(ui->tableWidget_enemyField, SIGNAL(cellClicked(int x, int y)), this, SLOT(shoot(x, y)));
@@ -157,5 +164,65 @@ void MainWindow::shoot(int x, int y)
 
 void MainWindow::doGame()
 {
+//    bool shooted = false;
+//    bool contin = false;
+//    std::pair<int, int> decision;
+//    //bool point = false;
+//    computerPlayer comp;
+
+//    while(seaBattle->status != GameStatus::EndOfGame){
+//        if (seaBattle->status == StartNewGame) // Начинаем новую игру
+//            seaBattle->status = Player1Attack;
+
+//        else if (seaBattle->status == Player2Attack){  // Ход второго игрока
+
+//            if (contin)
+//                decision = comp.makeRawDecision(getEnemyField(2));
+//            //else - человечье решение
+//            shooted = f2.shoot(decision.first, decision.second);
+
+//            if (/*уничтожен последний корабль противника*/ 1)
+//                seaBattle->status = EndOfGame;
+
+//            if (!shooted){
+//                 seaBattle->status = Player1Attack; // Мимо :)
+//                 contin = false;
+//            }
+//            else {
+//                seaBattle->status = Player2Attack; // Снова ходит первый игрок (но делает человечье решение)
+//                contin = true;
+//            }
+//        }
+
+//        else if (seaBattle->status == Player1Attack){  // Ход второго игрока
+//            if (contin)
+//                decision = Player2.makeRawDecision(getEnemyField(1));
+//            //else - человечье решение
+//            shooted = f1.shoot(decision.first, decision.second);
+
+//            if (/*уничтожен последний корабль противника*/ 1)
+//                seaBattle->status = EndOfGame;
+
+//            if (!shooted){
+//                 seaBattle->status = Player1Attack; // Мимо :)
+//                 contin = false;
+//            }
+//            else {
+//                seaBattle->status = Player2Attack; // Снова ходит первый игрок (но делает человечье решение)
+//                contin = true;
+//            }
+//        }
+
+//        // После каждого хода отрисовываем текущее состояние игроков и ждем нажатия любой клавиши
+//        //Player1.DrawBoard();
+//        //Player2.DrawBoard();
+//        //getch();
+//    }
+
+//    //Выводим результаты игры
+//    //cout << "Первый игрок: " << Player1.PlayerStatus() << endl;
+//    //cout << "Второй игрок: " << Player2.PlayerStatus() << endl;
+//    //cout << "Игра окончена." << endl;
+//    //getch();
 
 }

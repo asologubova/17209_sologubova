@@ -29,13 +29,139 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>80</y>
-      <width>468</width>
-      <height>204</height>
+      <x>110</x>
+      <y>20</y>
+      <width>461</width>
+      <height>41</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout_names">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetFixedSize</enum>
+     </property>
+     <item>
+      <widget class="QLabel" name="label_1">
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font: 75 20pt &quot;MS Shell Dlg 2&quot;;
+  qproperty-alignment: 'AlignVCenter | AlignCenter';
+ 
+}</string>
+       </property>
+       <property name="text">
+        <string>Игрок 1</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>100</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="styleSheet">
+        <string notr="true">QLabel {
+	font: 75 20pt &quot;MS Shell Dlg 2&quot;;
+  qproperty-alignment: 'AlignVCenter | AlignCenter';
+ 
+}
+
+font: 75 20pt &quot;MS Shell Dlg 2&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Игрок 2</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="pushButton_place_ships">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>290</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>500</width>
+      <height>50</height>
+     </size>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+  background-color: #B0C4DE;
+  color: white; 
+  border: 1px solid gray;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #4A82B4, stop: 1 #B0C4DE);
+}</string>
+    </property>
+    <property name="text">
+     <string>Расставить корабли</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_result">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>290</y>
+      <width>481</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel {
+  background-color: #B0C4DE;
+  color: white; 
+  border: 1px solid gray;
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>70</y>
+      <width>481</width>
+      <height>211</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_fields">
      <item>
       <widget class="QTableWidget" name="tableWidget_myField">
        <property name="minimumSize">
@@ -133,7 +259,7 @@
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>50</width>
+         <width>40</width>
          <height>20</height>
         </size>
        </property>
@@ -222,109 +348,10 @@
      </item>
     </layout>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>30</y>
-      <width>389</width>
-      <height>35</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="styleSheet">
-        <string notr="true">QLabel {
-	font: 75 20pt &quot;MS Shell Dlg 2&quot;;
-  qproperty-alignment: 'AlignVCenter | AlignCenter';
- 
-}</string>
-       </property>
-       <property name="text">
-        <string>Игрок 1</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>120</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="styleSheet">
-        <string notr="true">QLabel {
-	font: 75 20pt &quot;MS Shell Dlg 2&quot;;
-  qproperty-alignment: 'AlignVCenter | AlignCenter';
- 
-}
-
-font: 75 20pt &quot;MS Shell Dlg 2&quot;;</string>
-       </property>
-       <property name="text">
-        <string>Игрок 2</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QPushButton" name="pushButton_place_ships">
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>290</y>
-      <width>131</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>0</width>
-      <height>0</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>500</width>
-      <height>50</height>
-     </size>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="layoutDirection">
-     <enum>Qt::LeftToRight</enum>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">QPushButton {
-  background-color: #B0C4DE;
-  color: white; 
-  border: 1px solid gray;
-}
-
-QPushButton:pressed {
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                      stop: 0 #4A82B4, stop: 1 #B0C4DE);
-}</string>
-    </property>
-    <property name="text">
-     <string>Расставить корабли</string>
-    </property>
-   </widget>
+   <zorder>layoutWidget</zorder>
+   <zorder>label_result</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>pushButton_place_ships</zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
