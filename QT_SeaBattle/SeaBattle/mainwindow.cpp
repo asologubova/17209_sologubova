@@ -197,28 +197,21 @@ void MainWindow::reprintField(const std::string & key)
         currentField = myField.getFieldInstance();
         for (int i = 0; i< 10; i++)
             for (int j = 0; j < 10; j++){
-                switch(currentField[10 * i + j]){
-                case Cell::CL_DOT:
+                if (currentField[10 * i + j] == Cell::CL_FULL || currentField[10 * i + j] == Cell::CL_HALF)
+                    ui->tableWidget_myField->item(i,j)->setIcon(img_cross);
+                else if (currentField[10 * i + j] == Cell::CL_DOT)
                     ui->tableWidget_myField->item(i,j)->setIcon(img_point);
-                case Cell::CL_HALF:
-                    ui->tableWidget_myField->item(i,j)->setIcon(img_cross);
-                case Cell::CL_FULL:
-                    ui->tableWidget_myField->item(i,j)->setIcon(img_cross);
-                }
             }
     }
+
     else if (key == "enemy"){
         currentField = enemyField.getFieldInstance();
         for (int i = 0; i< 10; i++)
             for (int j = 0; j < 10; j++){
-                switch(currentField[10 * i + j]){
-                case Cell::CL_DOT:
+                if (currentField[10 * i + j] == Cell::CL_FULL || currentField[10 * i + j] == Cell::CL_HALF)
+                    ui->tableWidget_enemyField->item(i,j)->setIcon(img_cross);
+                else if (currentField[10 * i + j] == Cell::CL_DOT)
                     ui->tableWidget_enemyField->item(i,j)->setIcon(img_point);
-                case Cell::CL_HALF:
-                    ui->tableWidget_enemyField->item(i,j)->setIcon(img_cross);
-                case Cell::CL_FULL:
-                    ui->tableWidget_enemyField->item(i,j)->setIcon(img_cross);
-                }
             }
     }
 }
