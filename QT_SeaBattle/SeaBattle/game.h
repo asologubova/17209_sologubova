@@ -4,11 +4,11 @@
 #include "computerplayer.h"
 #include "field.h"
 
-enum GameStatus
+enum class GameStatus
 {
     StartNewGame,       // Начать новую игру
-    Player1Attack,      // Ходит первый игрок
-    Player2Attack,      // Ходит второй игрок
+    MeAttack,      // Ходит первый игрок
+    EnemyAttack,      // Ходит второй игрок
     EndOfGame           // Конец игры
 };
 

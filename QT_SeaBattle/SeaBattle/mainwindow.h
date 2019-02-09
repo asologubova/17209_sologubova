@@ -5,6 +5,8 @@
 #include <QTableWidget>
 #include <QMessageBox>
 //#include <QPixmap>
+#include <QFileDialog>
+#include <QDir>
 
 #include "game.h"
 
@@ -25,21 +27,24 @@ private slots:
     void on_actionsave_game_triggered();
     void on_actionopen_saved_game_triggered();
 
-    void reprintField(QTableWidget & wid);
+    void reprintField(const std::string & key);
 
     void on_tableWidget_myField_cellClicked(int row, int column);
     void on_tableWidget_enemyField_cellClicked(int row, int column);
 
     void checkPlacing();
     const std::array<Cell, 100> & getFieldInstace(const std::string & key) const;
-    void doGame();
+    void meAttack(int x, int y);
+    void enemyAttack();
+    void endGame(const QString & str);
 
 private:
     Ui::MainWindow *ui;
 
-    Game *seaBattle;
+    computerPlayer comp;
+    Game seaBattle;
     Field myField, enemyField;
-    int enemyShips, myShips;
+    int myShips, enemyShips;
 
     QIcon img_point, img_cross;
 };

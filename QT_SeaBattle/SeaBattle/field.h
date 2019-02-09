@@ -26,8 +26,8 @@ struct _Ship {
 };
 
 class Field {
-
 private:
+    int numOfShips;
     std::array<Cell, 100> field;
     std::vector<_Ship> ships;
 
@@ -35,9 +35,10 @@ private:
 
 public:
     Field();
+    int getNumOfShips();
     bool setShip(int x, int y, const Ship & ship, ShipPosition pos);
     void autoPlaceShips();
-    bool shoot(int x, int y);//true - если было попадание; false - иначе
+    char shoot(int x, int y);//0 - без попаданий, 1 - ранил, 2 - убил
     void clear();//очистка поля от всех кораблей
     const std::array<Cell, 100> & getFieldInstance() const;
 };

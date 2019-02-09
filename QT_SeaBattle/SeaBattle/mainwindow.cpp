@@ -57,7 +57,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pushButton_shoot->setHidden(true);
 
     connect(ui->pushButton_place_ships, SIGNAL(clicked()), this, SLOT(checkPlacing()));
-    connect(ui->tableWidget_enemyField, SIGNAL(cellClicked(int x, int y)), this, SLOT(shoot(x, y)));
 
     myShips = 10;
     enemyShips = 10;
@@ -97,33 +96,130 @@ void MainWindow::on_actionnew_game_triggered()
     myShips = 10;
     enemyShips = 10;
 
-    ui->statusBar->showMessage("Вы начали новую игру");
+    ui->statusBar->showMessage(tr("Вы начали новую игру"));
 }
 
 void MainWindow::on_actionsave_game_triggered()
 {
-    ui->statusBar->showMessage("Идет сохранение...");
+    ui->statusBar->showMessage(tr("Идет сохранение..."));
 
-    //...
+    QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить текущую игру"),
+        QDir::homePath() + "/Desktop/SB/QT_SeaBattle/SeaBattle/saved games", tr("Game files *.txt (*.txt)")); //изменить
 
-    ui->statusBar->showMessage("Игра сохранена");
+    if(filename.length() < 1)
+        return;
+
+    QFile file(filename);
+    if(!file.open(QIODevice::WriteOnly /*| QIODevice::Truncate*/))
+        return;
+
+    QString str;
+    QChar ch;
+
+    GameStatus s = seaBattle.status;
+    switch(s){
+    case GameStatus::StartNewGame: str = "StartNewGame"; break;
+    case GameStatus::MeAttack: str = "MeAttack"; break;
+    case GameStatus::EnemyAttack: str = "EnemyAttack"; break;
+    case GameStatus::EndOfGame: str = "EndOfGame"; break;
+    }
+    file.write(str.toUtf8());
+    str.clear();
+
+    std::array<Cell, 100> mf = myField.getFieldInstance();
+    std::array<Cell, 100> ef = enemyField.getFieldInstance();
+    for (int i = 0; i < 10; i++){
+        file.write("\n");
+        for (int  j = 0; j < 10; j++){
+            Cell c = mf[10 * i + j];
+            switch(c){
+            case Cell::CL_CLEAR: ch = 'c'; break;
+            case Cell::CL_SHIP: ch = 's'; break;
+            case Cell::CL_DOT: ch = 'd'; break;
+            case Cell::CL_HALF: ch = 'h'; break;
+            case Cell::CL_FULL: ch = 'f'; break;
+            }
+            str += ch;
+        }
+        file.write(str.toUtf8());
+        str.clear();
+    }
+
+    for (int i = 0; i < 10; i++){
+        file.write("\n");
+        for (int  j = 0; j < 10; j++){
+            Cell c = ef[10 * i + j];
+            switch(c){
+            case Cell::CL_CLEAR: ch = 'c'; break;
+            case Cell::CL_SHIP: ch = 's'; break;
+            case Cell::CL_DOT: ch = 'd'; break;
+            case Cell::CL_HALF: ch = 'h'; break;
+            case Cell::CL_FULL: ch = 'f'; break;
+            }
+            str += ch;
+        }
+        file.write(str.toUtf8());
+        str.clear();
+    }
+
+    file.close();
+
+    ui->statusBar->showMessage(tr("Игра сохранена"));
 }
 
 void MainWindow::on_actionopen_saved_game_triggered()
 {
-    ui->statusBar->showMessage("Идет загрузка...");
+    ui->statusBar->showMessage(tr("Идет загрузка..."));
+
+    QString filename = QFileDialog::getOpenFileName(this, tr("Открыть сохраненную игру"),
+        QDir::homePath() + "/Desktop/SB/QT_SeaBattle/SeaBattle/saved games", tr("Game files *.sb (*.sb)")); //изменить
+
+    if(filename.length() < 1)
+        return;
+
+    QFile file(filename);
+    if(!file.open(QIODevice::WriteOnly /*| QIODevice::Truncate*/))
+        return;
 
     //...
 
-    ui->statusBar->showMessage("Сохраненная игра загружена");
+
+
+    file.close();
+
+    ui->statusBar->showMessage(tr("Сохраненная игра загружена"));
 }
 
-void MainWindow::reprintField(QTableWidget & wid) //наверное (после каждого хода)
+void MainWindow::reprintField(const std::string & key)
 {
-    for (int i = 0; i < wid.rowCount(); i++){
-        for (int j = 0; j < wid.columnCount(); j++){
-
-        }
+    std::array<Cell, 100> currentField;
+    if (key == "my"){
+        currentField = myField.getFieldInstance();
+        for (int i = 0; i< 10; i++)
+            for (int j = 0; j < 10; j++){
+                switch(currentField[10 * i + j]){
+                case Cell::CL_DOT:
+                    ui->tableWidget_myField->item(i,j)->setIcon(img_point);
+                case Cell::CL_HALF:
+                    ui->tableWidget_myField->item(i,j)->setIcon(img_cross);
+                case Cell::CL_FULL:
+                    ui->tableWidget_myField->item(i,j)->setIcon(img_cross);
+                }
+            }
+    }
+    else if (key == "enemy"){
+        currentField = enemyField.getFieldInstance();
+        for (int i = 0; i< 10; i++)
+            for (int j = 0; j < 10; j++){
+                switch(currentField[10 * i + j]){
+                case Cell::CL_DOT:
+                    ui->tableWidget_enemyField->item(i,j)->setIcon(img_point);
+                case Cell::CL_HALF:
+                    ui->tableWidget_enemyField->item(i,j)->setIcon(img_cross);
+                case Cell::CL_FULL:
+                    ui->tableWidget_enemyField->item(i,j)->setIcon(img_cross);
+                }
+            }
     }
 }
 
@@ -140,17 +236,18 @@ void MainWindow::on_tableWidget_myField_cellClicked(int row, int column)
 
 void MainWindow::on_tableWidget_enemyField_cellClicked(int row, int column)
 {
-    for (int i = 0; i < 10; i++)
-        for (int j = 0; j< 10; j++)
-            if (ui->tableWidget_enemyField->item(i,j)->backgroundColor() == Qt::yellow){
-                ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::white);
-                if (!(ui->tableWidget_enemyField->item(row,column)->flags() == Qt::ItemIsDragEnabled)){
-                    ui->tableWidget_enemyField->item(row, column)->setBackground(Qt::yellow);
-                }
-                return;
-            }
+//    for (int i = 0; i < 10; i++)
+//        for (int j = 0; j< 10; j++)
+//            if (ui->tableWidget_enemyField->item(i,j)->backgroundColor() == Qt::yellow){
+//                ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::white);
+//                if (!(ui->tableWidget_enemyField->item(row,column)->flags() == Qt::ItemIsDragEnabled)){
+//                    ui->tableWidget_enemyField->item(row, column)->setBackground(Qt::yellow);
+//                }
+//                return;
+//            }
     if (!(ui->tableWidget_enemyField->item(row,column)->flags() == Qt::ItemIsDragEnabled)){
         ui->tableWidget_enemyField->item(row, column)->setBackground(Qt::yellow);
+        meAttack(row, column);
     }
 }
 
@@ -166,26 +263,38 @@ void MainWindow::checkPlacing()
         }
     }
 
-    bool ok = seaBattle->checkPlacing(currentField);
+    bool ok = seaBattle.checkPlacing(currentField);
     if (!ok){
-        QString str = "Пожалуйста, расставьте корабли по правилу: ";
-        str += "корабли не должны соприкасаться друг с другом бортами или углами,";
-        str += "на поле должно располагаться 10 кораблей: \nодин 4-палубный,";
-        str += "\nдва 3-палубных, \nтри 2 - палубных \nи четыре 1-палубных корабля.\n";
-        str += "Клетки всех кораблей должны располагаться в ряд, не допускается ";
-        str += "расстановка кораблей зиг-загом, углом или квадратом";
-        QMessageBox::information(this, "Неправильная расстановка", str);
+        QString str = tr("Пожалуйста, расставьте корабли по правилу: ");
+        str += tr("корабли не должны соприкасаться друг с другом бортами или углами,");
+        str += tr("на поле должно располагаться 10 кораблей: \nодин 4-палубный,");
+        str += tr("\nдва 3-палубных, \nтри 2 - палубных \nи четыре 1-палубных корабля.\n");
+        str += tr("Клетки всех кораблей должны располагаться в ряд, не допускается ");
+        str += tr("расстановка кораблей зиг-загом, углом или квадратом");
+        QMessageBox::information(this, tr("Неправильная расстановка"), str);
     } else {
         ui->pushButton_place_ships->setHidden(true);
 
+        enemyField.autoPlaceShips();
+        //currentField = enemyField.getFieldInstance();
+        //ok = seaBattle.checkPlacing(currentField);
+        srand(static_cast<unsigned>(time(nullptr)));
+        int r = rand() % 2;
+        if (r)
+            seaBattle.status = GameStatus::MeAttack;
+        else
+            seaBattle.status =  GameStatus::EnemyAttack;
+        // seaBattle->status =  (r == 1) ? MeAttack : EnemyAttack;
+        if (seaBattle.status == GameStatus::EnemyAttack){
+            enemyAttack();
+            return;
+        }
         for (int i = 0; i < 10; i++)
             for (int j = 0; j < 10; j++){
                 ui->tableWidget_myField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
                 ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
             }
-
-        ui->pushButton_shoot->setHidden(false);
-        doGame();
+        ui->statusBar->showMessage(tr("Ваш ход"));
     }
 }
 
@@ -197,73 +306,75 @@ const std::array<Cell, 100> & MainWindow::getFieldInstace(const std::string & ke
     else if (key == "enemy"){
         return enemyField.getFieldInstance();
     }
-    Field f; //такого не должно быть
+    Field f; //такого случая не должно быть
     return f.getFieldInstance();
 }
 
-void MainWindow::doGame()
+void MainWindow::meAttack(int x, int y)
 {
-//    bool shooted = false;
-//    bool contin = false;
-//    std::pair<int, int> decision;
-//    //bool point = false;
-//    computerPlayer comp;
+    char contin = enemyField.shoot(x, y);
+    reprintField("enemy");
+    if (enemyField.getNumOfShips() == 0){
+        seaBattle.status = GameStatus::EndOfGame;
+        endGame("YOU HAVE WON!");
+        return;
+    }
 
-//    while(seaBattle->status != GameStatus::EndOfGame){
-//        if (seaBattle->status == StartNewGame) // Начинаем новую игру
-//            seaBattle->status = Player1Attack;
+    if (contin > 0){
+        ui->statusBar->showMessage(tr("Ваш ход"));
+        return;
+    }
 
-//        else if (seaBattle->status == Player2Attack){  // Ход второго игрока
-
-//            if (contin)
-//                decision = comp.makeRawDecision(getEnemyField(2));
-//            //else - человечье решение
-//            shooted = f2.shoot(decision.first, decision.second);
-
-//            if (/*уничтожен последний корабль противника*/ 1)
-//                seaBattle->status = EndOfGame;
-
-//            if (!shooted){
-//                 seaBattle->status = Player1Attack; // Мимо :)
-//                 contin = false;
-//            }
-//            else {
-//                seaBattle->status = Player2Attack; // Снова ходит первый игрок (но делает человечье решение)
-//                contin = true;
-//            }
-//        }
-
-//        else if (seaBattle->status == Player1Attack){  // Ход второго игрока
-//            if (contin)
-//                decision = Player2.makeRawDecision(getEnemyField(1));
-//            //else - человечье решение
-//            shooted = f1.shoot(decision.first, decision.second);
-
-//            if (/*уничтожен последний корабль противника*/ 1)
-//                seaBattle->status = EndOfGame;
-
-//            if (!shooted){
-//                 seaBattle->status = Player1Attack; // Мимо :)
-//                 contin = false;
-//            }
-//            else {
-//                seaBattle->status = Player2Attack; // Снова ходит первый игрок (но делает человечье решение)
-//                contin = true;
-//            }
-//        }
-
-//        // После каждого хода отрисовываем текущее состояние игроков и ждем нажатия любой клавиши
-//        //Player1.DrawBoard();
-//        //Player2.DrawBoard();
-//        //getch();
-//    }
-
-//    //Выводим результаты игры
-//    //cout << "Первый игрок: " << Player1.PlayerStatus() << endl;
-//    //cout << "Второй игрок: " << Player2.PlayerStatus() << endl;
-//    //cout << "Игра окончена." << endl;
-//    //getch();
-
+    seaBattle.status = GameStatus::EnemyAttack;
+    enemyAttack();
 }
 
+void MainWindow::enemyAttack()
+{
+    ui->statusBar->showMessage(tr("Ходит противник"));
+    for (int i = 0; i < 10; i++)
+        for (int j = 0; j < 10; j++)
+            ui->tableWidget_enemyField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
 
+    int contin = 0;
+    std::pair<int, int> decision;
+
+    if (contin == 0){
+        decision = comp.makeRawDecision(myField.getFieldInstance());
+        contin = myField.shoot(decision.first, decision.second);
+        reprintField("my");
+    }
+
+    while(contin != 0){
+        if (contin == 1){ //человечье решение
+            //decision = comp.makeReasonDecision();
+            decision = comp.makeRawDecision(myField.getFieldInstance());
+            contin = myField.shoot(decision.first, decision.second);
+            reprintField("my");
+        }
+        else if (myField.getNumOfShips() == 0){
+                seaBattle.status = GameStatus::EndOfGame;
+                endGame("THE OPPONENT HAS WON!");
+                return;
+            }
+    }
+
+    seaBattle.status = GameStatus::MeAttack;
+
+    for (int i = 0; i < 10; i++)
+        for (int j = 0; j < 10; j++)
+            ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
+    ui->statusBar->showMessage(tr("Ваш ход"));
+}
+
+void MainWindow::endGame(const QString & str)
+{
+    ui->statusBar->showMessage(tr("Игра окончена"));
+    for (int i = 0; i < 10; i++)
+        for (int j = 0; j < 10; j++){
+            ui->tableWidget_myField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
+            ui->tableWidget_enemyField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
+        }
+    ui->label_result->setHidden(false);
+    ui->label_result->setText(str);
+}

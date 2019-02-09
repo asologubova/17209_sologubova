@@ -5,6 +5,7 @@ Field::Field()
     for (int i = 0; i < 100; i++){
         field[i] = Cell::CL_CLEAR;
     }
+    numOfShips = 10;
 }
 
 bool Field::setShip(int x, int y, const Ship & ship, ShipPosition pos){
@@ -67,6 +68,7 @@ void Field::autoPlaceShips(){
 
     ShipPosition pos = ShipPosition::HORIZONTAL;
     for (int i = 0; i < 10; i++){
+        ok = false;
         Ship sh(arr[i]);
         while (!ok) {
             int x = rand() % 10;
@@ -80,9 +82,9 @@ void Field::autoPlaceShips(){
     }
 }
 
-bool Field::shoot(int x, int y){
+char Field::shoot(int x, int y){
     size_t coord = 10 * (y - 1) + x;
-    if (field[coord] == Cell::CL_DOT || field[coord] == Cell::CL_HALF)  return false;
+    if (field[coord] == Cell::CL_DOT || field[coord] == Cell::CL_HALF)  return 0;
 
     field[coord] = Cell::CL_DOT;
     if (field[coord] == Cell::CL_SHIP){
@@ -90,17 +92,18 @@ bool Field::shoot(int x, int y){
         //Если убили весь корабль - обрисовать его иначе
         for (int i = 0; i < ships.size(); i++){
             for (int j = 0; j < ships[i].coordinates.size(); j++){
-                if (ships[i].coordinates[j].first == x
-                      && ships[i].coordinates[j].second == y)
+                if (ships[i].coordinates[j].first == x && ships[i].coordinates[j].second == y)
                   ships[i].ship.shoot(j);
                 if (!ships[i].ship.isAlive()){
                     killFrameCells(ships[i]);
+                    numOfShips--;
+                    return 2;
                     //(В ИГРЕ) УМЕНЬШИТЬ СЧЕТЧИК КОРАБЛЕЙ, ЕСЛИ СЧЕТЧИК == 0 - КОНЕЦ
                 }
             }
         }
     }
-        return true;
+    return 1;
 }
 
 void Field::clear(){
@@ -126,4 +129,8 @@ void Field::killFrameCells(const _Ship & s){ // в случае смерти в�
 
             }
     }
+}
+
+int Field::getNumOfShips(){
+    return numOfShips;
 }
