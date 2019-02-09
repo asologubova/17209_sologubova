@@ -348,10 +348,43 @@ QPushButton:pressed {
      </item>
     </layout>
    </widget>
+   <widget class="QPushButton" name="pushButton_shoot">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>280</y>
+      <width>101</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+  background-color: #B0C4DE;
+  color: white; 
+  border: 1px solid gray;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #4A82B4, stop: 1 #B0C4DE);
+}</string>
+    </property>
+    <property name="text">
+     <string>Сделать ход</string>
+    </property>
+   </widget>
    <zorder>layoutWidget</zorder>
    <zorder>label_result</zorder>
    <zorder>layoutWidget</zorder>
    <zorder>pushButton_place_ships</zorder>
+   <zorder>pushButton_shoot</zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
@@ -370,13 +403,13 @@ QPushButton:pressed {
     <property name="title">
      <string>Game</string>
     </property>
-    <addaction name="actionstart_game"/>
+    <addaction name="actionnew_game"/>
     <addaction name="actionsave_game"/>
     <addaction name="actionopen_saved_game"/>
    </widget>
    <addaction name="menuGame"/>
   </widget>
-  <action name="actionstart_game">
+  <action name="actionnew_game">
    <property name="text">
     <string>new game</string>
    </property>

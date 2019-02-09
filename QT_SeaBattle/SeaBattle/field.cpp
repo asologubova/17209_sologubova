@@ -2,7 +2,9 @@
 
 Field::Field()
 {
-
+    for (int i = 0; i < 100; i++){
+        field[i] = Cell::CL_CLEAR;
+    }
 }
 
 bool Field::setShip(int x, int y, const Ship & ship, ShipPosition pos){
@@ -106,7 +108,7 @@ void Field::clear(){
         it = Cell::CL_CLEAR;
 }
 
-const std::array<Cell, 100> & Field::getFieldInstance(){
+const std::array<Cell, 100> & Field::getFieldInstance() const{
     return field;
 }
 

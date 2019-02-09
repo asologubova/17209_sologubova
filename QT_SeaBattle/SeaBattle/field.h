@@ -22,7 +22,7 @@ enum class Cell{
 
 struct _Ship {
     Ship ship;
-    std::vector<std::pair<int, int>> coordinates;//координаты x, y
+    std::vector<std::pair<int, int>> coordinates;//координаты палуб корабля (x, y)
 };
 
 class Field {
@@ -39,7 +39,7 @@ public:
     void autoPlaceShips();
     bool shoot(int x, int y);//true - если было попадание; false - иначе
     void clear();//очистка поля от всех кораблей
-    const std::array<Cell, 100> & getFieldInstance();
+    const std::array<Cell, 100> & getFieldInstance() const;
 };
 
 #endif // FIELD_H

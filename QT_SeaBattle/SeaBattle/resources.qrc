@@ -2,5 +2,7 @@
     <qresource prefix="/res">
         <file>img/left.png</file>
         <file>img/right.png</file>
+        <file>img/cross.png</file>
+        <file>img/point.png</file>
     </qresource>
 </RCC>

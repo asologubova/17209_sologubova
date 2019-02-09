@@ -8,11 +8,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle("Sea Battle");
 
-    QPixmap img1(":/res/img/left.png");
-    QPixmap img2(":/res/img/right.png");
-    //int w = ui->label_3
-    ui->label_3->setPixmap(img1.scaled(40, 40, Qt::KeepAspectRatio));
-    ui->label_4->setPixmap(img2.scaled(40, 40, Qt::KeepAspectRatio));
+    img_point.addFile(":/res/img/point.png");
+    img_cross.addFile(":/res/img/cross.png");
+
+    //QPixmap img_cross(":/res/img/point.png");
+    //ui->tableWidget_myField->item(1,1)->setIcon(img_cross.scaled(20, 20, Qt::KeepAspectRatio));
 
     ui->tableWidget_myField->setColumnCount(10);
     ui->tableWidget_myField->setRowCount(10);
@@ -50,10 +50,17 @@ MainWindow::MainWindow(QWidget *parent) :
         for (int j = 0; j < 10; j++){
             ui->tableWidget_enemyField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
         }
+    ui->tableWidget_myField->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->tableWidget_enemyField->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
     ui->label_result->setHidden(true);
+    ui->pushButton_shoot->setHidden(true);
 
     connect(ui->pushButton_place_ships, SIGNAL(clicked()), this, SLOT(checkPlacing()));
     connect(ui->tableWidget_enemyField, SIGNAL(cellClicked(int x, int y)), this, SLOT(shoot(x, y)));
+
+    myShips = 10;
+    enemyShips = 10;
 }
 
 
@@ -65,14 +72,30 @@ MainWindow::~MainWindow()
             delete(ui->tableWidget_enemyField->item(i,j));
         }
     delete ui;
-
 }
 
 //*****************************************************************************************************//
 
-void MainWindow::on_actionstart_game_triggered()
+void MainWindow::on_actionnew_game_triggered()
 {
-    //...
+    for(int i = 0; i<10; i++){
+        for (int j = 0; j<10; j++){
+            ui->tableWidget_myField->item(i,j)->setBackgroundColor(Qt::white);
+            ui->tableWidget_myField->item(i,j)->setFlags(nullptr);
+            ui->tableWidget_myField->item(i,j)->setIcon(QIcon());
+
+            ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::white);
+            ui->tableWidget_enemyField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
+            ui->tableWidget_enemyField->item(i,j)->setIcon(QIcon());
+        }
+    }
+
+    ui->pushButton_shoot->setHidden(true);
+    ui->label_result->setHidden(true);
+    ui->pushButton_place_ships->setHidden(false);
+
+    myShips = 10;
+    enemyShips = 10;
 
     ui->statusBar->showMessage("Вы начали новую игру");
 }
@@ -106,21 +129,28 @@ void MainWindow::reprintField(QTableWidget & wid) //наверное (после
 
 void MainWindow::on_tableWidget_myField_cellClicked(int row, int column)
 {
-    if (!(ui->tableWidget_myField->item(row,column)->flags() == Qt::ItemIsDragEnabled)
-            && (ui->tableWidget_myField->item(row,column)->backgroundColor() == Qt::white))
-        ui->tableWidget_myField->item(row, column)->setBackground(Qt::blue);
-    else if (!(ui->tableWidget_myField->item(row,column)->flags() == Qt::ItemIsDragEnabled)
-             && (ui->tableWidget_myField->item(row,column)->backgroundColor() == Qt::blue))
-        ui->tableWidget_myField->item(row, column)->setBackground(Qt::white);
+    if (!(ui->tableWidget_myField->item(row,column)->flags() == Qt::ItemIsDragEnabled)){
+        if (ui->tableWidget_myField->item(row,column)->backgroundColor() == Qt::white)
+            ui->tableWidget_myField->item(row, column)->setBackground(Qt::blue);
+        else if (ui->tableWidget_myField->item(row,column)->backgroundColor() == Qt::blue)
+            ui->tableWidget_myField->item(row, column)->setBackground(Qt::white);
+    }
 }
+
 
 void MainWindow::on_tableWidget_enemyField_cellClicked(int row, int column)
 {
+    for (int i = 0; i < 10; i++)
+        for (int j = 0; j< 10; j++)
+            if (ui->tableWidget_enemyField->item(i,j)->backgroundColor() == Qt::yellow){
+                ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::white);
+                if (!(ui->tableWidget_enemyField->item(row,column)->flags() == Qt::ItemIsDragEnabled)){
+                    ui->tableWidget_enemyField->item(row, column)->setBackground(Qt::yellow);
+                }
+                return;
+            }
     if (!(ui->tableWidget_enemyField->item(row,column)->flags() == Qt::ItemIsDragEnabled)){
-        //если нет корабля:
         ui->tableWidget_enemyField->item(row, column)->setBackground(Qt::yellow);
-        //если есть корабль:
-        //ui->tableWidget_enemyField->item(row, column)->setBackground(Qt::red);
     }
 }
 
@@ -153,13 +183,22 @@ void MainWindow::checkPlacing()
                 ui->tableWidget_myField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
                 ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
             }
+
+        ui->pushButton_shoot->setHidden(false);
         doGame();
     }
 }
 
-void MainWindow::shoot(int x, int y)
+const std::array<Cell, 100> & MainWindow::getFieldInstace(const std::string & key) const
 {
-
+    if (key == "my"){
+        return myField.getFieldInstance();
+    }
+    else if (key == "enemy"){
+        return enemyField.getFieldInstance();
+    }
+    Field f; //такого не должно быть
+    return f.getFieldInstance();
 }
 
 void MainWindow::doGame()
@@ -226,3 +265,5 @@ void MainWindow::doGame()
 //    //getch();
 
 }
+
+

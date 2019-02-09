@@ -73,7 +73,7 @@ Game::Game(){
 
 //}
 
-bool Game::checkPlacing(const std::array<Cell, 100> & fld) const // + УЧЕСТЬ, ЯВЛЯЕТСЯ ЛИ КЛЕТКА КРАЙНЕЙ!!!
+bool Game::checkPlacing(const std::array<Cell, 100> & fld) const
 {
     int singleDeck = 0,
             doubleDeck = 0,
@@ -91,10 +91,10 @@ bool Game::checkPlacing(const std::array<Cell, 100> & fld) const // + УЧЕСТ
 
                         if ((tmp[c + count - 11] == Cell::CL_SHIP && y > 0 && (x + count) > 0) ||
                                 (tmp[c + count - 10] == Cell::CL_SHIP && y > 0) ||
-                                (tmp[c + count - 9] == Cell::CL_SHIP && y > 0) ||
-                                (tmp[c + count + 9] == Cell::CL_SHIP && (x + count) > 0 && y < 9)||
+                                (tmp[c + count - 9] == Cell::CL_SHIP && y > 0 && (x + count) < 9) ||
+                                (tmp[c + count + 9] == Cell::CL_SHIP && y < 9 && (x + count) > 0)||
                                 (tmp[c + count + 10] == Cell::CL_SHIP && y < 9)||
-                                (tmp[c + count + 11] == Cell::CL_SHIP && (x + count) < 9 && y < 9)){
+                                (tmp[c + count + 11] == Cell::CL_SHIP && y < 9 && (x + count) < 9)){
                             return false;
                         }
                         tmp[c + count] = Cell::CL_CLEAR;
@@ -104,8 +104,10 @@ bool Game::checkPlacing(const std::array<Cell, 100> & fld) const // + УЧЕСТ
                 } else { // вертикальный или однопалубный
                     while ((y + count < 10) && (tmp[c + 10 * count] == Cell::CL_SHIP)){
 
-                        if ((tmp[c + 10 * count - 11] == Cell::CL_SHIP  && (y + count) > 0 && x > 0) ||
-                                (tmp[c + 10 * count - 9] == Cell::CL_SHIP  && (y + count) > 0) ||
+                        if ((tmp[c + 10 * count - 11] == Cell::CL_SHIP  && x > 0 && (y + count) > 0) ||
+                                (tmp[c + 10 * count - 9] == Cell::CL_SHIP  && x < 9 && (y + count) > 0) ||
+                                (tmp[c + 10 * count - 1] == Cell::CL_SHIP  && x > 0) ||
+                                (tmp[c + 10 * count + 1] == Cell::CL_SHIP  &&  x < 9 ) ||
                                 (tmp[c + 10 * count + 9] == Cell::CL_SHIP && x > 0 && (y + count) < 9)||
                                 (tmp[c + 10 * count + 11] == Cell::CL_SHIP && x < 9 && (y + count) < 9)){
                             return false;

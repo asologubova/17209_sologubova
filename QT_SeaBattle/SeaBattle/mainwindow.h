@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QTableWidget>
 #include <QMessageBox>
-#include <QPixmap>
+//#include <QPixmap>
 
 #include "game.h"
 
@@ -21,7 +21,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_actionstart_game_triggered();
+    void on_actionnew_game_triggered();
     void on_actionsave_game_triggered();
     void on_actionopen_saved_game_triggered();
 
@@ -31,13 +31,17 @@ private slots:
     void on_tableWidget_enemyField_cellClicked(int row, int column);
 
     void checkPlacing();
-    void shoot(int x, int y);
+    const std::array<Cell, 100> & getFieldInstace(const std::string & key) const;
     void doGame();
 
 private:
     Ui::MainWindow *ui;
 
     Game *seaBattle;
+    Field myField, enemyField;
+    int enemyShips, myShips;
+
+    QIcon img_point, img_cross;
 };
 
 #endif // MAINWINDOW_H
