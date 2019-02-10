@@ -46,9 +46,8 @@ private:
     computerPlayer comp;
     Game seaBattle;
     Field myField, enemyField;
-    int myShips, enemyShips;
 
-    //QIcon img_point, img_cross;
+    QIcon img_point, img_cross;
 };
 
 #endif // MAINWINDOW_H

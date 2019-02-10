@@ -8,11 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowTitle("Sea Battle");
 
-    //img_point.addFile(":/res/img/point.png");
-    //img_cross.addFile(":/res/img/cross.png");
-
-    //QPixmap img_cross(":/res/img/point.png");
-    //ui->tableWidget_myField->item(1,1)->setIcon(img_cross.scaled(20, 20, Qt::KeepAspectRatio));
+    img_point.addFile(":/res/img/point.png");
+    img_cross.addFile(":/res/img/cross.png");
 
     ui->tableWidget_myField->setColumnCount(10);
     ui->tableWidget_myField->setRowCount(10);
@@ -68,9 +65,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton_place_ships, SIGNAL(clicked()), this, SLOT(checkPlacing()));
     connect(ui->pushButton_auto_place_ships, SIGNAL(clicked()), this, SLOT(autoPlace()));
     connect(ui->pushButton_clear, SIGNAL(clicked()), this, SLOT(clearField()));
-
-    myShips = 10;
-    enemyShips = 10;
 }
 
 
@@ -109,9 +103,6 @@ void MainWindow::on_actionnew_game_triggered()
     ui->pushButton_place_ships->setHidden(false);
     ui->pushButton_auto_place_ships->setHidden(false);
 
-    myShips = 10;
-    enemyShips = 10;
-
     ui->statusBar->showMessage(tr("Вы начали новую игру"));
 }
 
@@ -126,7 +117,7 @@ void MainWindow::on_actionsave_game_triggered()
         return;
 
     QFile file(filename);
-    if(!file.open(QIODevice::WriteOnly /*| QIODevice::Truncate*/))
+    if(!file.open(QIODevice::WriteOnly))
         return;
 
     QString str;
@@ -139,11 +130,6 @@ void MainWindow::on_actionsave_game_triggered()
     case GameStatus::EnemyAttack: str = "EnemyAttack"; break;
     case GameStatus::EndOfGame: str = "EndOfGame"; break;
     }
-    file.write(str.toUtf8());
-    str.clear();
-
-    file.write("\r\n");
-    str = QString::number(myShips);
     file.write(str.toUtf8());
     str.clear();
 
@@ -165,11 +151,6 @@ void MainWindow::on_actionsave_game_triggered()
         file.write(str.toUtf8());
         str.clear();
     }
-
-    file.write("\r\n");
-    str = QString::number(enemyShips);
-    file.write(str.toUtf8());
-    str.clear();
 
     for (int i = 0; i < 10; i++){
         file.write("\r\n");
@@ -197,6 +178,24 @@ void MainWindow::on_actionopen_saved_game_triggered() // ПЛОХОВАТО!!!!!
 {
     ui->statusBar->showMessage(tr("Идет загрузка..."));
 
+
+
+    //...................
+    for(int i = 0; i<10; i++){
+        for (int j = 0; j<10; j++){
+            ui->tableWidget_myField->item(i,j)->setBackgroundColor(Qt::white);
+            ui->tableWidget_myField->item(i,j)->setFlags(nullptr);
+            ui->tableWidget_myField->item(i,j)->setIcon(QIcon());
+
+            ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::white);
+            ui->tableWidget_enemyField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
+            ui->tableWidget_enemyField->item(i,j)->setIcon(QIcon());
+        }
+    }
+    //....................
+
+
+
     QString filename = QFileDialog::getOpenFileName(this, tr("Открыть сохраненную игру"),
         QDir::homePath() + "/Desktop/SB/QT_SeaBattle/SeaBattle/saved games", tr("Game files *.txt (*.txt)")); //изменить
 
@@ -204,7 +203,7 @@ void MainWindow::on_actionopen_saved_game_triggered() // ПЛОХОВАТО!!!!!
         return;
 
     QFile file(filename);
-    if(!file.open(QIODevice::ReadOnly /*| QIODevice::Truncate*/))
+    if(!file.open(QIODevice::ReadOnly))
         return;
 
     myField.clear();
@@ -223,8 +222,6 @@ void MainWindow::on_actionopen_saved_game_triggered() // ПЛОХОВАТО!!!!!
         seaBattle.status = GameStatus::EndOfGame;
 
     std::array<Cell, 100> currentField;
-    str = file.readLine();
-    myShips = str.toInt();
 
     for (int i = 0; i < 10; i++){
         str = file.readLine();
@@ -237,16 +234,13 @@ void MainWindow::on_actionopen_saved_game_triggered() // ПЛОХОВАТО!!!!!
                 currentField[10 * i + j] = Cell::CL_DOT;
             else if (str[j] == 'h')
                 currentField[10 * i + j] = Cell::CL_HALF;
-            else
+            else //full
                 currentField[10 * i + j] = Cell::CL_FULL;
         }
     }
 
     myField.fill(currentField);
     reprintField("my");
-
-    str = file.readLine();
-    enemyShips = str.toInt();
 
     for (int i = 0; i < 10; i++){
         str = file.readLine();
@@ -299,14 +293,11 @@ void MainWindow::reprintField(const std::string & key)
         for (int i = 0; i < 10; i++)
             for (int j = 0; j < 10; j++){
                 if (currentField[10 * i + j] == Cell::CL_FULL || currentField[10 * i + j] == Cell::CL_HALF){
-                    QPixmap img_cross(":/res/img/cross.png");
-                    ui->tableWidget_myField->item(i,j)->setIcon(img_cross.scaled(20, 20, Qt::KeepAspectRatio));
-                    //ui->tableWidget_myField->item(i,j)->setIcon(img_cross);
+                    ui->tableWidget_myField->item(i,j)->setBackgroundColor(Qt::blue);
+                    ui->tableWidget_myField->item(i,j)->setIcon(img_cross);
                 }
                 else if (currentField[10 * i + j] == Cell::CL_DOT){
-                    QPixmap img_point(":/res/img/point.png");
-                    ui->tableWidget_myField->item(i,j)->setIcon(img_point.scaled(20, 20, Qt::KeepAspectRatio));
-                    //ui->tableWidget_myField->item(i,j)->setIcon(img_point);
+                    ui->tableWidget_myField->item(i,j)->setIcon(img_point);
                 }
                 else if (currentField[10 * i + j] == Cell::CL_SHIP){
                     ui->tableWidget_myField->item(i,j)->setBackgroundColor(Qt::blue);
@@ -320,23 +311,25 @@ void MainWindow::reprintField(const std::string & key)
         for (int i = 0; i < 10; i++)
             for (int j = 0; j < 10; j++){
                 if (currentField[10 * i + j] == Cell::CL_FULL || currentField[10 * i + j] == Cell::CL_HALF){
-                    QPixmap img_cross(":/res/img/cross.png");
-                    ui->tableWidget_enemyField->item(i,j)->setIcon(img_cross.scaled(20, 20, Qt::KeepAspectRatio));
-                    //ui->tableWidget_enemyField->item(i,j)->setIcon(img_cross);
+                    ui->tableWidget_enemyField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
+                    ui->tableWidget_enemyField->item(i,j)->setIcon(img_cross);
                 }
                 else if (currentField[10 * i + j] == Cell::CL_DOT){
-                    QPixmap img_point(":/res/img/point.png");
-                    ui->tableWidget_enemyField->item(i,j)->setIcon(img_point.scaled(20, 20, Qt::KeepAspectRatio));
-                    //ui->tableWidget_enemyField->item(i,j)->setIcon(img_point);
+                    ui->tableWidget_enemyField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
+                    ui->tableWidget_enemyField->item(i,j)->setIcon(img_point);
                 }
 
 
-
+                //...............
                 else if (currentField[10 * i + j] == Cell::CL_SHIP){
                     ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::red);
+                    ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
                 }
-                else ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::white);
-
+                else{
+                    ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::white);
+                    ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
+                }
+                //...............
 
 
             }
@@ -356,17 +349,7 @@ void MainWindow::on_tableWidget_myField_cellClicked(int row, int column)
 
 void MainWindow::on_tableWidget_enemyField_cellClicked(int row, int column)
 {
-//    for (int i = 0; i < 10; i++)
-//        for (int j = 0; j< 10; j++)
-//            if (ui->tableWidget_enemyField->item(i,j)->backgroundColor() == Qt::yellow){
-//                ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::white);
-//                if (!(ui->tableWidget_enemyField->item(row,column)->flags() == Qt::ItemIsDragEnabled)){
-//                    ui->tableWidget_enemyField->item(row, column)->setBackground(Qt::yellow);
-//                }
-//                return;
-//            }
     if (!(ui->tableWidget_enemyField->item(row,column)->flags() == Qt::ItemIsDragEnabled)){
-        ui->tableWidget_enemyField->item(row, column)->setBackground(Qt::yellow);
         meAttack(row, column);
     }
 }
@@ -406,6 +389,7 @@ void MainWindow::checkPlacing()
         str += tr("расстановка кораблей зиг-загом, углом или квадратом");
         QMessageBox::information(this, tr("Неправильная расстановка"), str);
     } else {
+
         ui->pushButton_auto_place_ships->setHidden(true);
         ui->pushButton_place_ships->setHidden(true);
         ui->pushButton_clear->setHidden(true);
@@ -413,18 +397,14 @@ void MainWindow::checkPlacing()
         enemyField.autoPlaceShips();
 
 
-
+        //....................
         reprintField("enemy");
-
+        //....................
 
 
         srand(static_cast<unsigned>(time(nullptr)));
         int r = rand() % 2;
-        if (r)
-            seaBattle.status = GameStatus::MeAttack;
-        else
-            seaBattle.status =  GameStatus::EnemyAttack;
-        // seaBattle->status =  (r == 1) ? GameStatus::MeAttack : GameStatus::EnemyAttack;
+        seaBattle.status =  (r == 1) ? GameStatus::MeAttack : GameStatus::EnemyAttack;
         if (seaBattle.status == GameStatus::EnemyAttack){
             enemyAttack();
             return;
@@ -432,8 +412,7 @@ void MainWindow::checkPlacing()
         for (int i = 0; i < 10; i++)
             for (int j = 0; j < 10; j++){
                 ui->tableWidget_myField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
-                if (ui->tableWidget_enemyField->item(i,j)->backgroundColor() != Qt::yellow)
-                    ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
+                ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
             }
         ui->statusBar->showMessage(tr("Ваш ход"));
     }
@@ -451,7 +430,7 @@ const std::array<Cell, 100> & MainWindow::getFieldInstace(const std::string & ke
     return f.getFieldInstance();
 }
 
-void MainWindow::meAttack(int x, int y) //x,y - ok
+void MainWindow::meAttack(int x, int y)
 {
     char contin = enemyField.shoot(y, x);
     reprintField("enemy");
@@ -508,8 +487,7 @@ void MainWindow::enemyAttack()
 
     for (int i = 0; i < 10; i++)
         for (int j = 0; j < 10; j++)
-            if (ui->tableWidget_enemyField->item(i,j)->backgroundColor() != Qt::yellow)
-                ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
+            ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
 
     ui->statusBar->showMessage(tr("Ваш ход"));
 }
@@ -525,3 +503,17 @@ void MainWindow::endGame(const QString & str)
     ui->label_result->setHidden(false);
     ui->label_result->setText(str);
 }
+
+//QPixmap img_cross(":/res/img/point.png");
+//ui->tableWidget_myField->item(i,j)->setIcon(img_cross.scaled(20, 20, Qt::KeepAspectRatio));
+
+
+//    for (int i = 0; i < 10; i++)
+//        for (int j = 0; j< 10; j++)
+//            if (ui->tableWidget_enemyField->item(i,j)->backgroundColor() == Qt::yellow){
+//                ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::white);
+//                if (!(ui->tableWidget_enemyField->item(row,column)->flags() == Qt::ItemIsDragEnabled)){
+//                    ui->tableWidget_enemyField->item(row, column)->setBackground(Qt::yellow);
+//                }
+//                return;
+//            }

@@ -5,11 +5,12 @@ Field::Field()
     for (int i = 0; i < 100; i++){
         field[i] = Cell::CL_CLEAR;
     }
-    numOfShips = 10;
+    numOfShips = 0;
 }
 
 bool Field::setShip(int x, int y, const Ship & ship, ShipPosition pos){
     int rk = ship.getRank();
+    std::array<ShipState, 4> shipStates = ship.getStates();
     _Ship s;
     std::vector<std::pair<int, int>> shipsCoord;
     std::pair<int, int> coord;
@@ -28,7 +29,11 @@ bool Field::setShip(int x, int y, const Ship & ship, ShipPosition pos){
                 }
         }
         for (int i = 0; i < rk; i++){
-            field[10 * y + x + i] = Cell::CL_SHIP;
+            if (!ship.isAlive())
+                field[10 * y + (x + i)] = Cell::CL_FULL;
+            else if (shipStates[i] == ShipState::DESTROYED)
+                field[10 * y + (x + i)] = Cell::CL_HALF;
+            else field[10 * y + (x + i)] = Cell::CL_SHIP;
             coord.first = x + i;
             coord.second = y;
             shipsCoord.push_back(coord);
@@ -46,8 +51,13 @@ bool Field::setShip(int x, int y, const Ship & ship, ShipPosition pos){
                         if (field[c] == Cell::CL_SHIP) return false;
                 }
         }
+
         for (int i = 0; i < rk; i++){
-            field[10 * (y + i) + x] = Cell::CL_SHIP;
+            if (!ship.isAlive())
+                field[10 * (y + i) + x] = Cell::CL_FULL;
+            else if (shipStates[i] == ShipState::DESTROYED)
+                field[10 * (y + i) + x] = Cell::CL_HALF;
+            else field[10 * (y + i) + x] = Cell::CL_SHIP;
             coord.first = x;
             coord.second = y + i;
             shipsCoord.push_back(coord);
@@ -58,6 +68,7 @@ bool Field::setShip(int x, int y, const Ship & ship, ShipPosition pos){
     s.ship = ship;
     s.coordinates = shipsCoord;
     ships.push_back(s);
+    if (ship.isAlive()) numOfShips++;
     return true;
 }
 
@@ -80,6 +91,8 @@ void Field::autoPlaceShips(){
             }
         }
     }
+
+    numOfShips = 10;
 }
 
 char Field::shoot(int x, int y){
@@ -113,7 +126,7 @@ void Field::clear(){
     for (int i = 0; i < 100; i++)
         field[i] = Cell::CL_CLEAR;
 
-    numOfShips = 10;
+    numOfShips = 0;
 }
 
 const std::array<Cell, 100> & Field::getFieldInstance() const{
@@ -121,17 +134,18 @@ const std::array<Cell, 100> & Field::getFieldInstance() const{
 }
 
 void Field::killFrameCells(const _Ship & s){ // в случае смерти всего корабля
-    for (unsigned i = 0; i < s.ship.getRank(); i++){
-        unsigned _x = s.coordinates[i].first;
-        unsigned _y = s.coordinates[i].second;
+    for (int i = 0; i < s.ship.getRank(); i++){
+        int x = s.coordinates[i].first;
+        int y = s.coordinates[i].second;
         for (int j = -1; j < 2; j++)
             for (int k = -1; k < 2; k++){
-                int c = 10 * (_y + j) + _x + k;
-                if (c >= 0 && c < 100){
-                    if (field[c] == Cell::CL_CLEAR) field[c] = Cell::CL_DOT;
-                    else if (field[c] == Cell::CL_HALF) field[c] = Cell::CL_FULL;
+                if ((y + j) < 10 && (x + k) < 10 && (y + j) >= 0 && (x + k) >= 0){
+                    int c = 10 * (y + j) + (x + k);
+                    if (c >= 0 && c < 100){
+                        if (field[c] == Cell::CL_CLEAR) field[c] = Cell::CL_DOT;
+                        else if (field[c] == Cell::CL_HALF) field[c] = Cell::CL_FULL;
+                    }
                 }
-
             }
     }
 }
@@ -147,7 +161,9 @@ void Field::fill(const std::array<Cell, 100> & fld) //Проверить, как
         for (int x = 0; x < 10; x++){
             int c = 10 * y + x;
             if(tmp[c] == Cell::CL_SHIP || tmp[c] == Cell::CL_HALF || tmp[c] == Cell::CL_FULL){
-                if((x < 9) && (tmp[c + 1] == Cell::CL_SHIP)){ // горизонтальный
+                if((x < 9) && ((tmp[c + 1] == Cell::CL_SHIP) ||
+                       (tmp[c + 1] == Cell::CL_HALF) ||
+                        (tmp[c + 1] == Cell::CL_FULL))){ // горизонтальный
                     pos = ShipPosition::HORIZONTAL;
                     while ((x + count < 10) &&
                            ((tmp[c + count] == Cell::CL_SHIP) ||

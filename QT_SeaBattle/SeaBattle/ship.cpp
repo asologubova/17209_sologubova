@@ -20,6 +20,10 @@ int Ship::getRank() const{
     return rank;
 }
 
+const std::array<ShipState, 4> & Ship::getStates() const{
+    return state;
+}
+
 void Ship::shoot(int num){
     if(num >= 0 && num < rank) {
         state[num] = ShipState::DESTROYED;
@@ -31,6 +35,6 @@ void Ship::shoot(int num){
     }
 }
 
-bool Ship::isAlive() {
+bool Ship::isAlive() const {
     return alive;
 }

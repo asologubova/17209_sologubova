@@ -14,10 +14,11 @@ public:
     Ship(int rk = 1);//аргумент - ранг создаваемого корабля
 
     int getRank() const;
+    const std::array<ShipState, 4> & getStates() const;
     void shoot(int num);
     //num - номер палубы (отсчёт от нуля);
     //вызывающий должен гарантировать, что num <= rank
-    bool isAlive();
+    bool isAlive() const;
 
 private:
     int rank;
