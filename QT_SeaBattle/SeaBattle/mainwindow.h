@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QTableWidget>
 #include <QMessageBox>
-//#include <QPixmap>
 #include <QFileDialog>
 #include <QDir>
 

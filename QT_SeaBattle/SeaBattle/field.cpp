@@ -10,7 +10,7 @@ Field::Field()
 
 bool Field::setShip(int x, int y, const Ship & ship, ShipPosition pos){
     int rk = ship.getRank();
-    std::array<ShipState, 4> shipStates = ship.getStates();
+    std::array<ShipState, 5> shipStates = ship.getStates();
     _Ship s;
     std::vector<std::pair<int, int>> shipsCoord;
     std::pair<int, int> coord;
@@ -28,6 +28,7 @@ bool Field::setShip(int x, int y, const Ship & ship, ShipPosition pos){
                         //много раз проходим по одним и тем же клеткам...
                 }
         }
+
         for (int i = 0; i < rk; i++){
             if (!ship.isAlive())
                 field[10 * y + (x + i)] = Cell::CL_FULL;
@@ -125,6 +126,7 @@ void Field::clear(){
         //it = Cell::CL_CLEAR;
     for (int i = 0; i < 100; i++)
         field[i] = Cell::CL_CLEAR;
+    ships.clear();
 
     numOfShips = 0;
 }
@@ -139,12 +141,10 @@ void Field::killFrameCells(const _Ship & s){ // в случае смерти в�
         int y = s.coordinates[i].second;
         for (int j = -1; j < 2; j++)
             for (int k = -1; k < 2; k++){
-                if ((y + j) < 10 && (x + k) < 10 && (y + j) >= 0 && (x + k) >= 0){
+                if ((y + j) >= 0 && (x + k) >= 0 && (y + j) < 10 && (x + k) < 10){
                     int c = 10 * (y + j) + (x + k);
-                    if (c >= 0 && c < 100){
-                        if (field[c] == Cell::CL_CLEAR) field[c] = Cell::CL_DOT;
-                        else if (field[c] == Cell::CL_HALF) field[c] = Cell::CL_FULL;
-                    }
+                    if (field[c] == Cell::CL_CLEAR) field[c] = Cell::CL_DOT;
+                    else if (field[c] == Cell::CL_HALF) field[c] = Cell::CL_FULL;
                 }
             }
     }

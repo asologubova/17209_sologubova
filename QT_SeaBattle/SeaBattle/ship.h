@@ -14,7 +14,7 @@ public:
     Ship(int rk = 1);//аргумент - ранг создаваемого корабля
 
     int getRank() const;
-    const std::array<ShipState, 4> & getStates() const;
+    const std::array<ShipState, 5> & getStates() const;
     void shoot(int num);
     //num - номер палубы (отсчёт от нуля);
     //вызывающий должен гарантировать, что num <= rank
@@ -22,7 +22,7 @@ public:
 
 private:
     int rank;
-    std::array<ShipState, 4> state;
+    std::array<ShipState, 5> state;
     //состояние каждой палубы; размер массива - всегда 4,
     //используются только первые rank элементов
     bool alive;

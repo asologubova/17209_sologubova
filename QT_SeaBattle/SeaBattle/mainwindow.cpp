@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     this->setWindowTitle("Sea Battle");
 
     img_point.addFile(":/res/img/point.png");
@@ -66,7 +67,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton_auto_place_ships, SIGNAL(clicked()), this, SLOT(autoPlace()));
     connect(ui->pushButton_clear, SIGNAL(clicked()), this, SLOT(clearField()));
 }
-
 
 MainWindow::~MainWindow()
 {
@@ -174,27 +174,19 @@ void MainWindow::on_actionsave_game_triggered()
     ui->statusBar->showMessage(tr("Игра сохранена"));
 }
 
-void MainWindow::on_actionopen_saved_game_triggered() // ПЛОХОВАТО!!!!!
+void MainWindow::on_actionopen_saved_game_triggered()
 {
     ui->statusBar->showMessage(tr("Идет загрузка..."));
 
-
-
-    //...................
     for(int i = 0; i<10; i++){
         for (int j = 0; j<10; j++){
             ui->tableWidget_myField->item(i,j)->setBackgroundColor(Qt::white);
-            ui->tableWidget_myField->item(i,j)->setFlags(nullptr);
             ui->tableWidget_myField->item(i,j)->setIcon(QIcon());
 
             ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::white);
-            ui->tableWidget_enemyField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
             ui->tableWidget_enemyField->item(i,j)->setIcon(QIcon());
         }
     }
-    //....................
-
-
 
     QString filename = QFileDialog::getOpenFileName(this, tr("Открыть сохраненную игру"),
         QDir::homePath() + "/Desktop/SB/QT_SeaBattle/SeaBattle/saved games", tr("Game files *.txt (*.txt)")); //изменить
@@ -266,6 +258,10 @@ void MainWindow::on_actionopen_saved_game_triggered() // ПЛОХОВАТО!!!!!
     ui->statusBar->showMessage(tr("Сохраненная игра загружена"));
 
     if (seaBattle.status == GameStatus::StartNewGame){
+        for (int i = 0; i < 10; i++)
+            for (int j = 0; j < 10; j++)
+                ui->tableWidget_enemyField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
+
         checkPlacing();
         return;
     }
@@ -274,12 +270,18 @@ void MainWindow::on_actionopen_saved_game_triggered() // ПЛОХОВАТО!!!!!
         ui->pushButton_place_ships->setHidden(true);
         ui->pushButton_auto_place_ships->setHidden(true);
         ui->statusBar->showMessage(tr("Ваш ход"));
+        for (int i = 0; i < 10; i++)
+            for (int j = 0; j < 10; j++)
+                ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
         return;
     }
     else if (seaBattle.status == GameStatus::EnemyAttack){
         ui->pushButton_clear->setHidden(true);
         ui->pushButton_place_ships->setHidden(true);
         ui->pushButton_auto_place_ships->setHidden(true);
+        for (int i = 0; i < 10; i++)
+            for (int j = 0; j < 10; j++)
+                ui->tableWidget_enemyField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
         enemyAttack();
         return;
     }
@@ -320,16 +322,16 @@ void MainWindow::reprintField(const std::string & key)
                 }
 
 
-                //...............
-                else if (currentField[10 * i + j] == Cell::CL_SHIP){
-                    ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::red);
-                    ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
-                }
-                else{
-                    ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::white);
-                    ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
-                }
-                //...............
+//                //...............
+//                else if (currentField[10 * i + j] == Cell::CL_SHIP){
+//                    ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::red);
+//                    ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
+//                }
+//                else{
+//                    ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::white);
+//                    ui->tableWidget_enemyField->item(i,j)->setFlags(nullptr);
+//                }
+//                //...............
 
 
             }
@@ -397,9 +399,9 @@ void MainWindow::checkPlacing()
         enemyField.autoPlaceShips();
 
 
-        //....................
-        reprintField("enemy");
-        //....................
+//        //....................
+//        reprintField("enemy");
+//        //....................
 
 
         srand(static_cast<unsigned>(time(nullptr)));
@@ -462,6 +464,8 @@ void MainWindow::enemyAttack()
 
     decision = comp.makeRawDecision(myField.getFieldInstance());
     contin = myField.shoot(decision.first, decision.second);
+   // QThread::sleep(1);
+    //QTimer::singleShot(2000, this, SLOT(timerFinish()));
     reprintField("my");
 
     while(contin != 0){
@@ -474,11 +478,15 @@ void MainWindow::enemyAttack()
             //decision = comp.makeReasonDecision();
             decision = comp.makeRawDecision(myField.getFieldInstance());
             contin = myField.shoot(decision.first, decision.second);
+            //QThread::sleep(1);
+            //QTimer::singleShot(2000, this, SLOT(timerFinish()));
             reprintField("my");
         }
         else if (contin == 2 || contin == 3){
             decision = comp.makeRawDecision(myField.getFieldInstance());
             contin = myField.shoot(decision.first, decision.second);
+            //QThread::sleep(1);
+            //QTimer::singleShot(2000, this, SLOT(timerFinish()));
             reprintField("my");
         }
     }

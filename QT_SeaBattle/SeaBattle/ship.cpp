@@ -20,7 +20,7 @@ int Ship::getRank() const{
     return rank;
 }
 
-const std::array<ShipState, 4> & Ship::getStates() const{
+const std::array<ShipState, 5> & Ship::getStates() const{
     return state;
 }
 
