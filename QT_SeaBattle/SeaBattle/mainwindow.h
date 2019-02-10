@@ -32,6 +32,8 @@ private slots:
     void on_tableWidget_myField_cellClicked(int row, int column);
     void on_tableWidget_enemyField_cellClicked(int row, int column);
 
+    void autoPlace();
+    void clearField();
     void checkPlacing();
     const std::array<Cell, 100> & getFieldInstace(const std::string & key) const;
     void meAttack(int x, int y);
@@ -46,7 +48,7 @@ private:
     Field myField, enemyField;
     int myShips, enemyShips;
 
-    QIcon img_point, img_cross;
+    //QIcon img_point, img_cross;
 };
 
 #endif // MAINWINDOW_H

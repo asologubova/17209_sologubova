@@ -21,7 +21,7 @@ public:
     Game();
     //void doGame();
     //const std::array<Cell, 100> & getEnemyField(int k);
-    bool checkPlacing(const std::array<Cell, 100> & fld) const;
+    bool checkPlacing(const std::array<Cell, 100> & fld, Field & f) const;
 };
 
 #endif // GAME_H

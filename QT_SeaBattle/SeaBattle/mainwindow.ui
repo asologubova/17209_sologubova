@@ -63,7 +63,7 @@
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>200</width>
+         <width>250</width>
          <height>20</height>
         </size>
        </property>
@@ -380,11 +380,73 @@ QPushButton:pressed {
      <string>Сделать ход</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_auto_place_ships">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>320</y>
+      <width>251</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+  background-color: #B0C4DE;
+  color: white; 
+  border: 1px solid gray;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #4A82B4, stop: 1 #B0C4DE);
+}</string>
+    </property>
+    <property name="text">
+     <string>Автоматическая расстановка кораблей</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_clear">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>350</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+  background-color: #B0C4DE;
+  color: white; 
+  border: 1px solid gray;
+}
+
+QPushButton:pressed {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                      stop: 0 #4A82B4, stop: 1 #B0C4DE);
+}</string>
+    </property>
+    <property name="text">
+     <string>Очистить поле</string>
+    </property>
+   </widget>
    <zorder>layoutWidget</zorder>
    <zorder>label_result</zorder>
    <zorder>layoutWidget</zorder>
    <zorder>pushButton_place_ships</zorder>
    <zorder>pushButton_shoot</zorder>
+   <zorder>pushButton_auto_place_ships</zorder>
+   <zorder>pushButton_clear</zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
@@ -401,7 +463,7 @@ QPushButton:pressed {
    </property>
    <widget class="QMenu" name="menuGame">
     <property name="title">
-     <string>Game</string>
+     <string>Игра</string>
     </property>
     <addaction name="actionnew_game"/>
     <addaction name="actionsave_game"/>
@@ -411,17 +473,17 @@ QPushButton:pressed {
   </widget>
   <action name="actionnew_game">
    <property name="text">
-    <string>new game</string>
+    <string>Новая игра</string>
    </property>
   </action>
   <action name="actionsave_game">
    <property name="text">
-    <string>save game</string>
+    <string>Сохранить игру</string>
    </property>
   </action>
   <action name="actionopen_saved_game">
    <property name="text">
-    <string>open saved game</string>
+    <string>Открыть сохраненную игру</string>
    </property>
   </action>
  </widget>

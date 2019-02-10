@@ -9,20 +9,23 @@ Game::Game(){
 //    else return f1.getFieldInstance();
 //}
 
-bool Game::checkPlacing(const std::array<Cell, 100> & fld) const
+bool Game::checkPlacing(const std::array<Cell, 100> & fld, Field & f) const
 {
+    f.clear();
     int singleDeck = 0,
             doubleDeck = 0,
             threeDeck = 0,
             fourDeck = 0;
     int count = 0;
     std::array<Cell, 100> tmp = fld;
+    ShipPosition pos;
 
     for (int y = 0; y < 10; y++){
         for (int x = 0; x < 10; x++){
             int c = 10 * y + x;
             if(tmp[c] == Cell::CL_SHIP){
                 if((x < 9) && (tmp[c + 1] == Cell::CL_SHIP)){ // горизонтальный
+                    pos = ShipPosition::HORIZONTAL;
                     while ((x + count < 10) && (tmp[c + count] == Cell::CL_SHIP)){
 
                         if ((tmp[c + count - 11] == Cell::CL_SHIP && y > 0 && (x + count) > 0) ||
@@ -38,6 +41,7 @@ bool Game::checkPlacing(const std::array<Cell, 100> & fld) const
                     }
 
                 } else { // вертикальный или однопалубный
+                    pos = ShipPosition::VERTICAL;
                     while ((y + count < 10) && (tmp[c + 10 * count] == Cell::CL_SHIP)){
 
                         if ((tmp[c + 10 * count - 11] == Cell::CL_SHIP  && x > 0 && (y + count) > 0) ||
@@ -52,6 +56,9 @@ bool Game::checkPlacing(const std::array<Cell, 100> & fld) const
                         count++;
                     }
                 }
+
+                Ship sh(count);
+                f.setShip(x, y, sh, pos);
 
                 if (count > 4) return false;
                 if (count == 4) fourDeck++;

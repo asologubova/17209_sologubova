@@ -83,22 +83,23 @@ void Field::autoPlaceShips(){
 }
 
 char Field::shoot(int x, int y){
-    size_t coord = 10 * (y - 1) + x;
-    if (field[coord] == Cell::CL_DOT || field[coord] == Cell::CL_HALF)  return 0;
+    int coord = 10 * y + x;
+    if (field[coord] == Cell::CL_DOT || field[coord] == Cell::CL_HALF || field[coord] == Cell::CL_FULL)  return 3;
 
-    field[coord] = Cell::CL_DOT;
-    if (field[coord] == Cell::CL_SHIP){
-        field[coord] = Cell::CL_HALF;
-        //Если убили весь корабль - обрисовать его иначе
-        for (int i = 0; i < ships.size(); i++){
-            for (int j = 0; j < ships[i].coordinates.size(); j++){
-                if (ships[i].coordinates[j].first == x && ships[i].coordinates[j].second == y)
-                  ships[i].ship.shoot(j);
+    if (!(field[coord] == Cell::CL_SHIP)){
+        field[coord] = Cell::CL_DOT;
+        return 0;
+    }
+    field[coord] = Cell::CL_HALF;
+    for (int i = 0; i < ships.size(); i++){
+        for (int j = 0; j < ships[i].coordinates.size(); j++){
+            if (ships[i].coordinates[j].first == x && ships[i].coordinates[j].second == y){
+                ships[i].ship.shoot(j);
                 if (!ships[i].ship.isAlive()){
+                    field[coord] = Cell::CL_FULL;
                     killFrameCells(ships[i]);
                     numOfShips--;
                     return 2;
-                    //(В ИГРЕ) УМЕНЬШИТЬ СЧЕТЧИК КОРАБЛЕЙ, ЕСЛИ СЧЕТЧИК == 0 - КОНЕЦ
                 }
             }
         }
@@ -107,8 +108,12 @@ char Field::shoot(int x, int y){
 }
 
 void Field::clear(){
-    for(Cell it : field)
-        it = Cell::CL_CLEAR;
+    //for(Cell it : field)
+        //it = Cell::CL_CLEAR;
+    for (int i = 0; i < 100; i++)
+        field[i] = Cell::CL_CLEAR;
+
+    numOfShips = 10;
 }
 
 const std::array<Cell, 100> & Field::getFieldInstance() const{
@@ -128,6 +133,61 @@ void Field::killFrameCells(const _Ship & s){ // в случае смерти в�
                 }
 
             }
+    }
+}
+
+void Field::fill(const std::array<Cell, 100> & fld) //Проверить, как работает
+{
+    clear();
+    int count = 0, shipsCount = 0;
+    std::array<Cell, 100> tmp = fld;
+    ShipPosition pos;
+
+    for (int y = 0; y < 10; y++){
+        for (int x = 0; x < 10; x++){
+            int c = 10 * y + x;
+            if(tmp[c] == Cell::CL_SHIP || tmp[c] == Cell::CL_HALF || tmp[c] == Cell::CL_FULL){
+                if((x < 9) && (tmp[c + 1] == Cell::CL_SHIP)){ // горизонтальный
+                    pos = ShipPosition::HORIZONTAL;
+                    while ((x + count < 10) &&
+                           ((tmp[c + count] == Cell::CL_SHIP) ||
+                            (tmp[c + count] == Cell::CL_HALF) ||
+                            (tmp[c + count] == Cell::CL_FULL))){
+                        tmp[c + count] = Cell::CL_CLEAR;
+                        count++;
+                    }
+
+                } else { // вертикальный или однопалубный
+                    pos = ShipPosition::VERTICAL;
+                    while ((y + count < 10) &&
+                           ((tmp[c + 10 * count] == Cell::CL_SHIP) ||
+                            (tmp[c + 10 * count] == Cell::CL_HALF)||
+                            (tmp[c + 10 * count] == Cell::CL_FULL))){
+                        tmp[c + 10 * count] = Cell::CL_CLEAR;
+                        count++;
+                    }
+                }
+
+                Ship sh(count);
+
+                for (int i = 0; i < count; i++){
+                    if (pos == ShipPosition::HORIZONTAL){
+                        if (fld[10 * y + (x + i)] == Cell::CL_FULL || fld[10 * y + (x + i)] == Cell::CL_HALF)
+                            sh.shoot(i);
+                    }
+                    else {
+                        if (fld[10 * (y + i )+ x] == Cell::CL_FULL || fld[10 * y + (x + i)] == Cell::CL_HALF)
+                            sh.shoot(i);
+                    }
+                }
+
+                if (sh.isAlive()) shipsCount++;
+                setShip(x, y, sh, pos);
+                count = 0;
+            }
+            if (tmp[c] == Cell::CL_DOT) field[c] = Cell::CL_DOT;
+            tmp[c] = Cell::CL_CLEAR;
+        }
     }
 }
 
