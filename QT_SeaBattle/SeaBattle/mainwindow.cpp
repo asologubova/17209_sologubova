@@ -6,7 +6,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     this->setWindowTitle("Sea Battle");
 
     img_point.addFile(":/res/img/point.png");
@@ -52,12 +51,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget_enemyField->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     ui->label_result->setHidden(true);
+    ui->label_result->setStyleSheet("color: rgb(0,0,255)");
+    ui->label_result->setAlignment(Qt::AlignHCenter);
     ui->pushButton_shoot->setText(tr("Сделать ход"));
     ui->pushButton_shoot->setHidden(true);
     ui->pushButton_place_ships->setText(tr("Расставить корабли"));
     ui->pushButton_clear->setText(tr("Очистить поле"));
-    ui->label_1->setText(tr("Игрок 1"));
-    ui->label_2->setText(tr("Игрок 2"));
+    ui->label_1->setText(tr("Моё поле"));
+    ui->label_2->setText(tr("Поле противника"));
     ui->menuGame->setTitle(tr("Игра"));
     ui->actionnew_game->setText(tr("Новая игра"));
     ui->actionsave_game->setText(tr("Сохранить игру"));
@@ -70,11 +71,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    for (int i = 0; i < 10; i++)
-        for (int j = 0; j < 10; j++){
-            delete(ui->tableWidget_myField->item(i,j));
-            delete(ui->tableWidget_enemyField->item(i,j));
-        }
     delete ui;
 }
 
@@ -96,6 +92,7 @@ void MainWindow::on_actionnew_game_triggered()
 
     myField.clear();
     enemyField.clear();
+    shootedPoints.fill(Cell::CL_CLEAR);
 
     ui->pushButton_shoot->setHidden(true);
     ui->label_result->setHidden(true);
@@ -200,6 +197,7 @@ void MainWindow::on_actionopen_saved_game_triggered()
 
     myField.clear();
     enemyField.clear();
+    shootedPoints.fill(Cell::CL_CLEAR);
 
     QString str = "";
     str = file.readLine();
@@ -297,9 +295,15 @@ void MainWindow::reprintField(const std::string & key)
                 if (currentField[10 * i + j] == Cell::CL_FULL || currentField[10 * i + j] == Cell::CL_HALF){
                     ui->tableWidget_myField->item(i,j)->setBackgroundColor(Qt::blue);
                     ui->tableWidget_myField->item(i,j)->setIcon(img_cross);
+//                    QTableWidgetItem *t = new QTableWidgetItem(img_cross, "");
+//                    t->setBackgroundColor(Qt::blue);
+//                    ui->tableWidget_myField->setItem(i,j,t);
                 }
                 else if (currentField[10 * i + j] == Cell::CL_DOT){
                     ui->tableWidget_myField->item(i,j)->setIcon(img_point);
+//                    QTableWidgetItem *t = new QTableWidgetItem(img_point, "");
+//                    t->setBackgroundColor(Qt::white);
+//                    ui->tableWidget_myField->setItem(i,j,t);
                 }
                 else if (currentField[10 * i + j] == Cell::CL_SHIP){
                     ui->tableWidget_myField->item(i,j)->setBackgroundColor(Qt::blue);
@@ -315,10 +319,16 @@ void MainWindow::reprintField(const std::string & key)
                 if (currentField[10 * i + j] == Cell::CL_FULL || currentField[10 * i + j] == Cell::CL_HALF){
                     ui->tableWidget_enemyField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
                     ui->tableWidget_enemyField->item(i,j)->setIcon(img_cross);
+//                    QTableWidgetItem *t = new QTableWidgetItem(img_cross, "");
+//                    t->setBackgroundColor(Qt::white);
+//                    ui->tableWidget_enemyField->setItem(i,j,t);
                 }
                 else if (currentField[10 * i + j] == Cell::CL_DOT){
                     ui->tableWidget_enemyField->item(i,j)->setFlags(Qt::ItemIsDragEnabled);
                     ui->tableWidget_enemyField->item(i,j)->setIcon(img_point);
+//                    QTableWidgetItem *t = new QTableWidgetItem(img_point, "");
+//                    t->setBackgroundColor(Qt::white);
+//                    ui->tableWidget_enemyField->setItem(i,j,t);
                 }
 
 
@@ -462,11 +472,16 @@ void MainWindow::enemyAttack()
     char contin = 0;
     std::pair<int, int> decision;
 
-    decision = comp.makeRawDecision(myField.getFieldInstance());
+    std::array<Cell, 100> tmp;
+    tmp.fill(Cell::CL_CLEAR);
+
+    if (shootedPoints != tmp)
+        decision = comp.makeReasonDecision(myField.getFieldInstance(), shootedPoints);
+    else decision = comp.makeRawDecision(myField.getFieldInstance());
     contin = myField.shoot(decision.first, decision.second);
-   // QThread::sleep(1);
-    //QTimer::singleShot(2000, this, SLOT(timerFinish()));
     reprintField("my");
+
+    if (contin == 1) shootedPoints[10 * decision.second + decision.first] = Cell::CL_HALF;
 
     while(contin != 0){
         if (myField.getNumOfShips() == 0){
@@ -474,20 +489,21 @@ void MainWindow::enemyAttack()
             endGame("THE OPPONENT HAS WON!");
             return;
         }
-        if (contin == 1){ // Должно быть человечье решение
-            //decision = comp.makeReasonDecision();
-            decision = comp.makeRawDecision(myField.getFieldInstance());
+        if (contin == 1){ // Должно быть человечье решение (ранил)
+            decision = comp.makeReasonDecision(myField.getFieldInstance(), shootedPoints);
             contin = myField.shoot(decision.first, decision.second);
-            //QThread::sleep(1);
-            //QTimer::singleShot(2000, this, SLOT(timerFinish()));
             reprintField("my");
+
+            if (contin == 1) shootedPoints[10 * decision.second + decision.first] = Cell::CL_HALF;
         }
-        else if (contin == 2 || contin == 3){
+        else{   // contin == 2 или 3 (убил или ткнул туда, где уже стоит отметка)
+            if (contin == 2)
+                shootedPoints.fill(Cell::CL_CLEAR);
             decision = comp.makeRawDecision(myField.getFieldInstance());
             contin = myField.shoot(decision.first, decision.second);
-            //QThread::sleep(1);
-            //QTimer::singleShot(2000, this, SLOT(timerFinish()));
             reprintField("my");
+
+            if (contin == 1) shootedPoints[10 * decision.second + decision.first] = Cell::CL_HALF;
         }
     }
 
@@ -511,17 +527,3 @@ void MainWindow::endGame(const QString & str)
     ui->label_result->setHidden(false);
     ui->label_result->setText(str);
 }
-
-//QPixmap img_cross(":/res/img/point.png");
-//ui->tableWidget_myField->item(i,j)->setIcon(img_cross.scaled(20, 20, Qt::KeepAspectRatio));
-
-
-//    for (int i = 0; i < 10; i++)
-//        for (int j = 0; j< 10; j++)
-//            if (ui->tableWidget_enemyField->item(i,j)->backgroundColor() == Qt::yellow){
-//                ui->tableWidget_enemyField->item(i,j)->setBackgroundColor(Qt::white);
-//                if (!(ui->tableWidget_enemyField->item(row,column)->flags() == Qt::ItemIsDragEnabled)){
-//                    ui->tableWidget_enemyField->item(row, column)->setBackground(Qt::yellow);
-//                }
-//                return;
-//            }

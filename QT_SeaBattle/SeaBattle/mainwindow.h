@@ -41,12 +41,12 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QIcon img_point, img_cross;
 
     computerPlayer comp;
     Game seaBattle;
     Field myField, enemyField;
-
-    QIcon img_point, img_cross;
+    std::array<Cell, 100> shootedPoints;
 };
 
 #endif // MAINWINDOW_H

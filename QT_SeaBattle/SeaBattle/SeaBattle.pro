@@ -30,17 +30,20 @@ SOURCES += \
     game.cpp \
     ship.cpp \
     computerplayer.cpp \
-    field.cpp
+    field.cpp \
+    choosemode.cpp
 
 HEADERS += \
         mainwindow.h \
     game.h \
     ship.h \
     computerplayer.h \
-    field.h
+    field.h \
+    choosemode.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    choosemode.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
