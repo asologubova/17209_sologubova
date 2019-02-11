@@ -108,7 +108,7 @@ void MainWindow::on_actionsave_game_triggered()
     ui->statusBar->showMessage(tr("Идет сохранение..."));
 
     QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить текущую игру"),
-        QDir::homePath() + "/Desktop/SB/QT_SeaBattle/SeaBattle/saved games", tr("Game files *.txt (*.txt)")); //изменить
+        QDir::homePath() + "/Desktop/QT_SeaBattle/SeaBattle/saved games", tr("Game files *.sb (*.sb)"));
 
     if(filename.length() < 1)
         return;
@@ -186,7 +186,7 @@ void MainWindow::on_actionopen_saved_game_triggered()
     }
 
     QString filename = QFileDialog::getOpenFileName(this, tr("Открыть сохраненную игру"),
-        QDir::homePath() + "/Desktop/SB/QT_SeaBattle/SeaBattle/saved games", tr("Game files *.txt (*.txt)")); //изменить
+        QDir::homePath() + "/Desktop/QT_SeaBattle/SeaBattle/saved games", tr("Game files *.sb (*.sb)"));
 
     if(filename.length() < 1)
         return;
